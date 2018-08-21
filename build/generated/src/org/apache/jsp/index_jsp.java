@@ -63,10 +63,10 @@ public final class index_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("<div class=\"header stickyhead center\">\r\n");
       out.write("        <span class = \"logo\"><i>Twitter-analysis</i></span>\r\n");
       out.write("    \r\n");
-      out.write("        <a href=\"index.html\" class=\"head-item\" style =\"border-bottom: 2px solid crimson;\">Hot topics</a>\r\n");
-      out.write("        <a href=\"hashtags.html\" class=\"head-item\">Hashtags</a>\r\n");
-      out.write("        <a href=\"sentiment.html\" class=\"head-item\">Sentiment analysis</a>\r\n");
-      out.write("        <a href=\"about.html\" class=\"head-item\">About project</a>\r\n");
+      out.write("        <a href=\"index.jsp\" class=\"head-item\" style =\"border-bottom: 2px solid crimson;\">Hot topics</a>\r\n");
+      out.write("        <a href=\"hashtags.jsp\" class=\"head-item\">Hashtags</a>\r\n");
+      out.write("        <a href=\"sentiment.jsp\" class=\"head-item\">Sentiment analysis</a>\r\n");
+      out.write("        <a href=\"about.jsp\" class=\"head-item\">About project</a>\r\n");
       out.write("</div>\t\r\n");
       out.write("\r\n");
       out.write("<div class = \"row center\">\r\n");
@@ -106,7 +106,7 @@ public final class index_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("        <div class =\"center\" id = \"list\">\r\n");
       out.write("            <div id = \"listItself\">\r\n");
       out.write("                <h3 id = \"topList\">List of hot topics </h3> <br> \r\n");
-      out.write("                <table>\r\n");
+      out.write("                <table> <!--table shows list of trending topics, position left-->\r\n");
       out.write("                    ");
  if (woeid != 0) {
                        List trends = JavaTweet.getHotTopics(woeid);
@@ -136,60 +136,6 @@ public final class index_jsp extends org.apache.jasper.runtime.HttpJspBase
                     
       out.write("\r\n");
       out.write("                </table>\r\n");
-      out.write("                \r\n");
-      out.write("                <table> <!--table shows list of trending topics, position left-->\r\n");
-      out.write("                 \r\n");
-      out.write("                    <tr>\r\n");
-      out.write("                        <td>1.</td>\r\n");
-      out.write("                        <td> <a class = \"link\" onclick=\"chosenTrend(this)\"> #boo </a></td>\r\n");
-      out.write("\r\n");
-      out.write("                    </tr>\r\n");
-      out.write("                    <tr>\r\n");
-      out.write("                        <td>2.</td>\r\n");
-      out.write("                        <td> <a class = \"link\" onclick=\"chosenTrend(this)\">#GERSWE</a> </td>\r\n");
-      out.write("\r\n");
-      out.write("                    </tr>\r\n");
-      out.write("                    <tr>\r\n");
-      out.write("                        <td>3.</td>\r\n");
-      out.write("                        <td><a class = \"link\" onclick=\"chosenTrend(this)\">Alemanha</a></td>\r\n");
-      out.write("\r\n");
-      out.write("                    </tr>\r\n");
-      out.write("                    <tr>\r\n");
-      out.write("                        <td>4.</td>\r\n");
-      out.write("                        <td><a class = \"link\" onclick=\"chosenTrend(this)\">#precure</a></td>\r\n");
-      out.write("\r\n");
-      out.write("                    </tr>\r\n");
-      out.write("                    <tr>\r\n");
-      out.write("                        <td>5.</td>\r\n");
-      out.write("                        <td><a class = \"link\" onclick=\"chosenTrend(this)\">#bee</a></td>\r\n");
-      out.write("\r\n");
-      out.write("                    </tr>\r\n");
-      out.write("                    <tr>\r\n");
-      out.write("                        <td>6.</td>\r\n");
-      out.write("                        <td><a class = \"link\" onclick=\"chosenTrend(this)\"> Kroos</a></td>\r\n");
-      out.write("\r\n");
-      out.write("                    </tr>\r\n");
-      out.write("                    <tr>\r\n");
-      out.write("                        <td>7.</td>\r\n");
-      out.write("                        <td><a class = \"link\" onclick=\"chosenTrend(this)\">#Rggg</a></td>\r\n");
-      out.write("\r\n");
-      out.write("                    </tr>\r\n");
-      out.write("                    <tr>\r\n");
-      out.write("                        <td>8.</td>\r\n");
-      out.write("                        <td><a class = \"link\" onclick=\"chosenTrend(this)\">\"Perfect\"</a></td>\r\n");
-      out.write("\r\n");
-      out.write("                    </tr>\r\n");
-      out.write("                    <tr>\r\n");
-      out.write("                        <td>9.</td>\r\n");
-      out.write("                        <td><a class = \"link\" onclick=\"chosenTrend(this)\">Red Hen</a></td>\r\n");
-      out.write("\r\n");
-      out.write("                    </tr>\r\n");
-      out.write("                    <tr>\r\n");
-      out.write("                        <td>10.</td>\r\n");
-      out.write("                        <td> <a class = \"link\" onclick=\"chosenTrend(this)\">kkkkk</a></td>\r\n");
-      out.write("\r\n");
-      out.write("                    </tr>\r\n");
-      out.write("                </table>\r\n");
       out.write("                <br>\r\n");
       out.write("                \r\n");
       out.write("                <br>\r\n");
@@ -202,11 +148,30 @@ public final class index_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("            <div id = \"forChoose\">\r\n");
       out.write("            <h3>Click on any topic for more details</h3> \r\n");
       out.write("            <p><i>Chosen topic: </i></p>   \r\n");
-      out.write("            <h4 id = \"chosen\">...</h4>\r\n");
+      out.write("            <p id = \"chosen\" >...</p>\r\n");
+      out.write("            \r\n");
+      out.write("            \r\n");
       out.write("            <!--go to the next page-->\r\n");
-      out.write("            <input type = \"button\" value=\"Hashtags\" class=\"button\"  onclick = \"window.location.href = 'hashtags.html'\" > <br><br>\r\n");
-      out.write("            <input type = \"button\" value=\"Sentiments\" class=\"button\" onclick = \"window.location.href = 'sentiment.html'\">\r\n");
+      out.write("            <form method =\"POST\" action = \"index.jsp\">\r\n");
       out.write("                \r\n");
+      out.write("            <input type = \"button\" value=\"Hashtags\" class=\"button\"  onclick = \"window.location.href = 'hashtags.jsp'\" > <br>\r\n");
+      out.write("            <input type =\"text\" id=\"hid\" name =\"hid\">\r\n");
+      out.write("            <a href=\"hashtags.jsp?tA= ");
+request.getParameter("hid"); 
+      out.write(" \" > Hashtags</a>\r\n");
+      out.write("            <br>\r\n");
+      out.write("            <input type = \"button\" value=\"Sentiments\" class=\"button\" onclick = \"window.location.href = 'sentiment.jsp'\">\r\n");
+      out.write("             ");
+   
+                String toAnalyze = request.getParameter("hid");  
+                if (toAnalyze!= null){
+                    session.setAttribute("chosenToAnalyze", "hh ");
+                } 
+                else session.setAttribute("chosenToAnalyze", "blaa");
+                
+            
+      out.write("  \r\n");
+      out.write("            </form>\r\n");
       out.write("            </div>\r\n");
       out.write("        </div>\r\n");
       out.write("        </div> \r\n");

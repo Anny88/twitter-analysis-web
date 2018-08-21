@@ -59,10 +59,10 @@ public final class about_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("<div class=\"header stickyhead center\">\r\n");
       out.write("    <span class = \"logo\"><i>Twitter-analysis</i></span>\r\n");
       out.write("\r\n");
-      out.write("    <a href=\"index.html\" class=\"head-item\">Hot topics</a>\r\n");
-      out.write("    <a href=\"hashtags.html\" class=\"head-item\" style =\"border-bottom: 2px solid crimson;\">Hashtags</a>\r\n");
-      out.write("    <a href=\"sentiment.html\" class=\"head-item\">Sentiment analysis</a>\r\n");
-      out.write("    <a href=\"about.html\" class=\"head-item\">About project</a>\r\n");
+      out.write("    <a href=\"index.jsp\" class=\"head-item\">Hot topics</a>\r\n");
+      out.write("    <a href=\"hashtags.jsp\" class=\"head-item\" style =\"border-bottom: 2px solid crimson;\">Hashtags</a>\r\n");
+      out.write("    <a href=\"sentiment.jsp\" class=\"head-item\">Sentiment analysis</a>\r\n");
+      out.write("    <a href=\"about.jsp\" class=\"head-item\">About project</a>\r\n");
       out.write("</div>\t\r\n");
       out.write("\r\n");
       out.write("    \r\n");

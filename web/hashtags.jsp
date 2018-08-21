@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html;" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -94,12 +95,12 @@
 <body>
 
 <div class="header stickyhead center">
-        <span align = "left" class = "logo"><i>Twitter-analysis</i></span>
+        <span class = "logo"><i>Twitter-analysis</i></span>
     
-        <a href="index.html" class="head-item">Hot topics</a>
-        <a href="hashtags.html" class="head-item" style ="border-bottom: 2px solid crimson;">Hashtags</a>
-        <a href="sentiment.html" class="head-item">Sentiment analysis</a>
-        <a href="about.html" class="head-item">About project</a>
+        <a href="index.jsp" class="head-item">Hot topics</a>
+        <a href="hashtags.jsp" class="head-item" style ="border-bottom: 2px solid crimson;">Hashtags</a>
+        <a href="sentiment.jsp" class="head-item">Sentiment analysis</a>
+        <a href="about.jsp" class="head-item">About project</a>
 </div>	
 
 <div id = "changeH" class = "row center">
@@ -111,15 +112,29 @@
             <h3>Creating Hashtags-tree for the topic or #hashtag</h3>
             <h4 id = "boo"><i>Search for Hashtag gives better results</i></h4>
             
+            
+            <%  request.setCharacterEncoding("UTF-8");
+                String  passedText = request.getParameter("hidHash");
+                String  passedPlace = session.getAttribute("woeid").toString(); 
+                
+                   if (passedText == null){
+                       passedText="#news";
+                   }
+                   if (passedPlace == null){
+                       passedPlace="1";
+                   }
+            %>
             <table>
                 <tr>
                     <td><i>Topic:</i> </td>
-                    <td><input type = "text" name = "topic" size="30" class="input" id = "topicH" placeholder="#football"></td>
+                    <td><input type = "text" name = "topic" size="30" class="input" id = "topicH" value= "<%=passedText %>"> </td>
                 </tr><br>
                 <tr>
                     <td><i>Location:</i> </td>
-                    <td><input type = "text" name = "place" size="30" class="input" value = "" id = "placeH" placeholder="the World"></td>
+                    <td><input type = "text" name = "place" size="30" class="input" value = "<%=passedPlace %>" id = "placeH" placeholder="the World"></td>
                 </tr>
+                
+             
                
             </table>
             <br>

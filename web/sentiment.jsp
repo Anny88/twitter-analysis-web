@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html;" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -5,24 +6,17 @@
     <link rel="stylesheet" type="text/css" href="styles.css"> 
     <script src="https://cdn.anychart.com/js/8.0.1/anychart-core.min.js"></script>
     <script src="https://cdn.anychart.com/js/8.0.1/anychart-pie.min.js"></script>
-    <script src="javascript.js"></script>
-    
-<script>
-        
-</script>
-    
-</head>    
-
-    
+    <script src="javascript.js"></script>   
+</head>        
 <body>
 
 <div class="header stickyhead center">
-        <span align = "left" class = "logo"><i>Twitter-analysis</i></span>
+        <span  class = "logo"><i>Twitter-analysis</i></span>
     
-        <a href="index.html" class="head-item">Hot topics</a>
-        <a href="hashtags.html" class="head-item">Hashtags</a>
-        <a href="sentiment.html" class="head-item" style ="border-bottom: 2px solid crimson;">Sentiment analysis</a>
-        <a href="about.html" class="head-item">About project</a>
+        <a href="index.jsp" class="head-item">Hot topics</a>
+        <a href="hashtags.jsp" class="head-item">Hashtags</a>
+        <a href="sentiment.jsp" class="head-item" style ="border-bottom: 2px solid crimson;">Sentiment analysis</a>
+        <a href="about.jsp" class="head-item">About project</a>
 </div>	
 
 <div id = "change" class = "row center">
@@ -34,14 +28,26 @@
             <h3>Sentiment analysis of the topic or #hashtag</h3>
             <h4><i>Available only in English</i></h4>
             
+            <%  request.setCharacterEncoding("UTF-8");
+                String  passedText = request.getParameter("hidSent");  
+                String  passedPlace = session.getAttribute("woeid").toString();  
+                
+                   if (passedText == null){
+                       passedText="#news";
+                   }
+                   if (passedPlace == null){
+                       passedPlace="1";
+                   }
+            %>
+            
             <table>
                 <tr>
                     <td><i>Topic:</i> </td>
-                    <td><input type = "text" name = "topic" size="30" class="input" value = "" id = "topicS" placeholder="#football"></td>
+                    <td><input type = "text" name = "topic" size="30" class="input" value= "<%=passedText %>" id = "topicS" placeholder="#football"></td>
                 </tr><br>
                 <tr>
                     <td><i>Location:</i> </td>
-                    <td><input type = "text" name = "place" size="30" class="input" value = "" id = "placeS" placeholder="the World"></td>
+                    <td><input type = "text" name = "place" size="30" class="input" value= "<%=passedPlace %>" id = "placeS" placeholder="the World"></td>
                 </tr>
             </table>
             <br>

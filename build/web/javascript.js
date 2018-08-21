@@ -79,19 +79,20 @@ function showTextHash(label, topic, place, sent){
 }
 
 
-
-/*function takeTopic(topic, input){
-    var topic = document.getElementById(topic).value;
-    var input = document.getElementById(input);    
-    input.innerHTML = "topic";
-    
-}*/
-
 function chosenTrend(t){
     //show clicked topic in the label in the right part of a result-div on index.html
-    document.getElementById("chosen").innerHTML = t.innerText; 
+    var s = t.innerText;
+    if (s != null) {
+        document.getElementById("chosen").innerHTML = s; 
+        document.getElementById("hidHash").value = s;
+        document.getElementById("hidSent").value = s;
+        alert (document.getElementById("hid").value);
+    }
 }
 
+function buttonClicked(name){
+    document.getElementById(name).value = "clicked";
+}
 function drawChart(){
 //draw chart with sample data for the page sentiment.html
     

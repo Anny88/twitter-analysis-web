@@ -1,5 +1,5 @@
+<%@ page language="java" contentType="text/html;" pageEncoding="UTF-8"%>
 <%@page import="java.util.List"%>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import = "javaclasses.JavaTweet"%>
 <!DOCTYPE html>
 <html>
@@ -14,10 +14,10 @@
 <div class="header stickyhead center">
     <span class = "logo"><i>Twitter-analysis</i></span>
 
-    <a href="index.html" class="head-item">Hot topics</a>
-    <a href="hashtags.html" class="head-item" style ="border-bottom: 2px solid crimson;">Hashtags</a>
-    <a href="sentiment.html" class="head-item">Sentiment analysis</a>
-    <a href="about.html" class="head-item">About project</a>
+    <a href="index.jsp" class="head-item">Hot topics</a>
+    <a href="hashtags.jsp" class="head-item" style ="border-bottom: 2px solid crimson;">Hashtags</a>
+    <a href="sentiment.jsp" class="head-item">Sentiment analysis</a>
+    <a href="about.jsp" class="head-item">About project</a>
 </div>	
 
     

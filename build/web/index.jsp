@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; "
-    pageEncoding="UTF-8"%>
+<%@page language="java" contentType="text/html;" pageEncoding="UTF-8"%>
 <%@page import="java.util.List"%>
 
 <%@page import = "javaclasses.JavaTweet"%>
@@ -19,10 +18,10 @@
 <div class="header stickyhead center">
         <span class = "logo"><i>Twitter-analysis</i></span>
     
-        <a href="index.html" class="head-item" style ="border-bottom: 2px solid crimson;">Hot topics</a>
-        <a href="hashtags.html" class="head-item">Hashtags</a>
-        <a href="sentiment.html" class="head-item">Sentiment analysis</a>
-        <a href="about.html" class="head-item">About project</a>
+        <a href="index.jsp" class="head-item" style ="border-bottom: 2px solid crimson;">Hot topics</a>
+        <a href="hashtags.jsp" class="head-item">Hashtags</a>
+        <a href="sentiment.jsp" class="head-item">Sentiment analysis</a>
+        <a href="about.jsp" class="head-item">About project</a>
 </div>	
 
 <div class = "row center">
@@ -60,7 +59,7 @@
         <div class ="center" id = "list">
             <div id = "listItself">
                 <h3 id = "topList">List of hot topics </h3> <br> 
-                <table>
+                <table> <!--table shows list of trending topics, position left-->
                     <% if (woeid != 0) {
                        List trends = JavaTweet.getHotTopics(woeid);
                        for (int i = 1; i<=10; i++){
@@ -80,60 +79,6 @@
                      }
                     %>
                 </table>
-                
-                <table> <!--table shows list of trending topics, position left-->
-                 
-                    <tr>
-                        <td>1.</td>
-                        <td> <a class = "link" onclick="chosenTrend(this)"> #boo </a></td>
-
-                    </tr>
-                    <tr>
-                        <td>2.</td>
-                        <td> <a class = "link" onclick="chosenTrend(this)">#GERSWE</a> </td>
-
-                    </tr>
-                    <tr>
-                        <td>3.</td>
-                        <td><a class = "link" onclick="chosenTrend(this)">Alemanha</a></td>
-
-                    </tr>
-                    <tr>
-                        <td>4.</td>
-                        <td><a class = "link" onclick="chosenTrend(this)">#precure</a></td>
-
-                    </tr>
-                    <tr>
-                        <td>5.</td>
-                        <td><a class = "link" onclick="chosenTrend(this)">#bee</a></td>
-
-                    </tr>
-                    <tr>
-                        <td>6.</td>
-                        <td><a class = "link" onclick="chosenTrend(this)"> Kroos</a></td>
-
-                    </tr>
-                    <tr>
-                        <td>7.</td>
-                        <td><a class = "link" onclick="chosenTrend(this)">#Rggg</a></td>
-
-                    </tr>
-                    <tr>
-                        <td>8.</td>
-                        <td><a class = "link" onclick="chosenTrend(this)">"Perfect"</a></td>
-
-                    </tr>
-                    <tr>
-                        <td>9.</td>
-                        <td><a class = "link" onclick="chosenTrend(this)">Red Hen</a></td>
-
-                    </tr>
-                    <tr>
-                        <td>10.</td>
-                        <td> <a class = "link" onclick="chosenTrend(this)">kkkkk</a></td>
-
-                    </tr>
-                </table>
                 <br>
                 
                 <br>
@@ -146,11 +91,26 @@
             <div id = "forChoose">
             <h3>Click on any topic for more details</h3> 
             <p><i>Chosen topic: </i></p>   
-            <h4 id = "chosen">...</h4>
+            <p id = "chosen" >...</p>
+            
+            
             <!--go to the next page-->
-            <input type = "button" value="Hashtags" class="button"  onclick = "window.location.href = 'hashtags.html'" > <br><br>
-            <input type = "button" value="Sentiments" class="button" onclick = "window.location.href = 'sentiment.html'">
+            <form method ="POST" action = "hashtags.jsp">
                 
+                <input type = "submit" value="Hashtags" class="button"  onclick = "window.location.href = 'hashtags.jsp'" > <br>
+                <!-- hidden input for passing value to hashtags page-->
+                <input type ="hidden" id="hidHash" name ="hidHash">                
+            </form>
+            <br>
+            <form method ="POST" action = "sentiment.jsp">
+                <input type ="hidden" id="hidSent" name ="hidSent">
+                <input type = "submit"  value="Sentiments" class="button">
+            </form> 
+            
+            <%  
+                session.setAttribute("woeid", woeid);              
+            %>  
+            
             </div>
         </div>
         </div> 
