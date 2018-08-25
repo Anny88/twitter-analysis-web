@@ -32,17 +32,17 @@ import twitter4j.TwitterException;
 
 public class JavaTweet  {
 
-    public static void mainy (String[] args) throws TwitterException, IOException {  
+    public static void mainy (String type, double lat, double lon, String keyword) throws TwitterException, IOException {  
         ConnectDB con = new ConnectDB();
         //FindTweets findTweets = new FindTweets();
         //NLP.init();
-        String keyword = "#fun";
+        //String keyword = "#fun";
         int MAX_QUERIES = 1;
-        int TWEETS_PER_QUERY = 20;
+        int TWEETS_PER_QUERY = 55;
         int Id = 2459115; //city WOEID
-        double lat = 40.730610;
-        double lon = -73.935242;       
-        String type = "hs";
+        //double lat = 40.730610;
+        //double lon = -73.935242;       
+        //String type = "hs";
         
         int[] rootSent;
         TreeNode Tree = null;
@@ -51,10 +51,12 @@ public class JavaTweet  {
                
         try {
             
-            //ConnectDB.dropTable();
-            //ConnectDB.createTable();            
+            ConnectDB.dropTable();
+            ConnectDB.createTable();            
             FindTweets.findByLoc(keyword, MAX_QUERIES,TWEETS_PER_QUERY, lat, lon, type);            
             //sentiment score for the whole set of tweets (root, keyword)
+            
+            /*
             rootSent = ConnectDB.selectSentScore(15, keyword.toLowerCase(), true);             
             BaumTree = new TreeNode (keyword.toLowerCase(), 100, rootSent);            
             Tree = createHashtagsTree(BaumTree, 15, keyword, false, 0, con);            
@@ -71,7 +73,7 @@ public class JavaTweet  {
             getSents(con);
                         
             System.out.println ("BAUM : \n\n");            
-            Tree.recursivePrint();
+            Tree.recursivePrint(); */
             
          } 
         catch (Exception ex) {
@@ -234,7 +236,7 @@ public class JavaTweet  {
     
     
     public static void getSents (ConnectDB con){
-        ResultSet sents = con.selectSentiments();
+        ResultSet sents = ConnectDB.selectSentiments();
         int sum = 0;
         int count[] = {0,0,0,0,0};
         int c = 0;

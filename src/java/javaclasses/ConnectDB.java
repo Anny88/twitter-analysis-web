@@ -95,7 +95,7 @@ public class ConnectDB {
        String insert = null;
        //Connection con;
         try{            
-            con = getConnection();
+            //con = getConnection();
             //dropTable();
             //createTable();
             

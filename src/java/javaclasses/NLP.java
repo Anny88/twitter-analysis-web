@@ -24,7 +24,7 @@ public class NLP {
     private static StanfordCoreNLP pipeline;
 
     public static void init() {
-         pipeline = new StanfordCoreNLP("MyPropFile.properties");
+         pipeline = new StanfordCoreNLP("javaclasses/MyPropFile.properties");
     }
 
     public static int findSentiment(String tweet) {

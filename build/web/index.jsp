@@ -61,22 +61,22 @@
                 <h3 id = "topList">List of hot topics </h3> <br> 
                 <table> <!--table shows list of trending topics, position left-->
                     <% if (woeid != 0) {
-                       List trends = JavaTweet.getHotTopics(woeid);
-                       for (int i = 1; i<=10; i++){
+                            List trends = JavaTweet.getHotTopics(woeid);
+                            for (int i = 1; i<=10; i++){
                      %>
-                        <tr>
-                            <td> <%=i%> </td>
-                            <td> <a class = "link" onclick="chosenTrend(this)"> <%=trends.get(i-1)%></a></td>
-                        </tr>                    
-                    <% } 
+                            <tr>
+                                 <td> <%=i%> </td>
+                                 <td> <a class = "link" onclick="chosenTrend(this)"> <%=trends.get(i-1)%></a></td>
+                            </tr>                    
+                    <%      } 
 
-                 %>
+                    %>
                   <script>                    
                     showDiv('search', 'list', 'onmap');                    
                     showText('topList', 'place');
                   </script>
-             <% 
-                     }
+                    <% 
+                       }
                     %>
                 </table>
                 <br>

@@ -4,14 +4,15 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <title>Sentiment analysis</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">    
     <link rel="stylesheet" type="text/css" href="styles.css"> 
     <script src="https://cdn.anychart.com/js/8.0.1/anychart-core.min.js"></script>
     <script src="https://cdn.anychart.com/js/8.0.1/anychart-pie.min.js"></script>
-    <script src="javascript.js"></script>   
+    
 </head>        
 <body>
-
+<script type ="text/javascript" src="javascript.js"></script>   
 <div class="header stickyhead center">
         <span  class = "logo"><i>Twitter-analysis</i></span>
     
@@ -32,12 +33,16 @@
             
             <%  request.setCharacterEncoding("UTF-8");
                 String  passedText = request.getParameter("hidSent");  
-                String  passedPlace = session.getAttribute("woeid").toString();  
+                String  passedPlace = "";
+                if (session.getAttribute("woeid") != null){
+                    passedPlace = session.getAttribute("woeid").toString();
+                }
+                  
                 
                    if (passedText == null){
                        passedText="#news";
                    }
-                   if (passedPlace == null){
+                   if (passedPlace.length() == 0){
                        passedPlace="1";
                    }
             %>
@@ -46,8 +51,8 @@
 
                 <tr>
                     <td><i>Topic:</i> </td>
-                    <td><input type = "text" name = "topic" size="30" class="input" value= "<%=passedText %>" id = "topicS" placeholder="#football"></td>
-                </tr><br>
+                    <td><input type = "text" name = "topicS" id = "topicS" size="30" class="input" value= "<%=passedText %>"  placeholder="#football"></td>
+                </tr>
                 <tr>
                     <td><i>Location:</i> </td>
                     <td><input type = "text" name = "place" size="30" class="input" value= "<%=passedPlace %>" id = "placeS" placeholder="the World"></td>
@@ -65,28 +70,13 @@
                     <td><input type = "number" name = "rad" size="30" class="input"></td>
                 </tr>
             </table>
-            </form> 
-   
-             <% int lat = 0;
-                int longit = 0;
-                String l1 = request.getParameter("lat"); 
-                String l2 = request.getParameter("long"); 
-                
-                if (l1 != null) { 
-                  lat = Integer.parseInt(l1);
-                }  
-                if (l2 != null) { 
-                  lat = Integer.parseInt(l2);
-                }            
-              
-              
-             %>    
-                
-                
-            <br>
-            
-            <input type = "submit" name = "sentiment" value="analyse" class = "button" onclick="showDiv('change', 'diagramm', 'onmap'),showTextSent('headsent', 'topicS', 'placeS'), drawChart()"> <!--search div will be hidden, output div shown, text field filled with user input and chart created-->
+                <br>
+           
+            <input type = "submit" name = "sentiment" value="analyse" class = "button" > <!--search div will be hidden, output div shown, text field filled with user input and chart created-->
 
+            </form> 
+                              
+            
         </div>      
             
     </div>
@@ -102,7 +92,7 @@
                     center: new google.maps.LatLng(51.5, -0.12),
                     zoom: 10,
                     mapTypeId: google.maps.MapTypeId.HYBRID
-                }
+                };
             var map = new google.maps.Map(document.getElementById("map"), mapOptions);  var infoWindow = new google.maps.InfoWindow;
                 var latit =  document.getElementById("lat");    
                 var long =  document.getElementById("long"); 
@@ -147,12 +137,12 @@
     <!-- table to show lists of negative, positive and neutral tweets with sample data-->
     
     <table>
-        <thead class = "center">
+        
             <th class = "borderedTable neg">negative tweets</th>
             <th class = "borderedTable">neutral tweets</th>
             <th class = "borderedTable pos">positive tweets</th>
-        </thead>
-        <tbody>
+        
+        
             <tr>
                 <td class = "borderedTable neg">99.9% Of US Politicians Are Actual Psychopaths, New Study Reveals </td>
                 <td class = "borderedTable">99.9% Of US Politicians Are Actual Psychopaths, New Study Reveals </td>
@@ -178,12 +168,53 @@
                 <td class = "borderedTable">99.9% Of US Politicians Are Actual Psychopaths, New Study Reveals </td>
                 <td class = "borderedTable pos">99.9% Of US Politicians Are Actual Psychopaths, New Study Reveals </td>
             </tr>
-        </tbody>
+        
     </table> <br>
     <input type = "submit" name = "newsent" value="New Sentiment Analysis" class = "button" onclick="newSearch('change', 'diagramm', 'onmap'), deleteChart()">
     <br> <br>
 
 </div>
-  
+
+<% double latitude = 0;
+                double longitude = 0;
+                String keyword = "";
+                
+                String kw = request.getParameter("topicS"); 
+                String l1 = request.getParameter("lat"); 
+                String l2 = request.getParameter("long"); 
+                
+                if (kw != null){
+                  if (kw.length() == 0){
+                      kw = "new";
+                  }  
+                  keyword = kw.toString();
+                }
+                
+                if (l1 != null) { 
+                  latitude = Double.parseDouble(l1);
+                }  
+                if (l2 != null) { 
+                  longitude = Double.parseDouble(l2);
+                }
+                
+                if (keyword != "" ){
+                //if (5 > 0) {   
+                    //call javaclass to search tweets for sentiment analysis
+                    //JavaTweet.mainy("s", latitude, longitude, keyword);
+                    
+                //}    
+                %>
+                <script>                
+                   //alert(findElementById ("topicS").value);               
+                   showDiv('change', 'diagramm', 'onmap');
+                   showTextSent('headsent', 'topicS', 'placeS');
+                   drawChart();
+                   
+                </script>
+                <%
+                   FindTweets.findByLoc (keyword, 2, 55, latitude, longitude, "s");
+                }                
+                            
+             %>                    
 </body>
-<html>
+</html>

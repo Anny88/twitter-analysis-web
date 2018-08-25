@@ -80,7 +80,7 @@ public final class index_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("            </h3>\r\n");
       out.write("            <br>\r\n");
       out.write("            <div id = \"form\" >\r\n");
-      out.write("                <form method=\"POST\" action =\"index.jsp\">\r\n");
+      out.write("            <form method=\"POST\" action =\"index.jsp\">\r\n");
       out.write("                <input type = \"text\" size=\"50\" class=\"input\" id = \"place\" name=\"woeid\" value=\"1\">\r\n");
       out.write("                <input type = \"submit\" value=\"search\" class = \"button\">  \r\n");
       out.write("             </form>\r\n");
@@ -109,30 +109,30 @@ public final class index_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("                <table> <!--table shows list of trending topics, position left-->\r\n");
       out.write("                    ");
  if (woeid != 0) {
-                       List trends = JavaTweet.getHotTopics(woeid);
-                       for (int i = 1; i<=10; i++){
+                            List trends = JavaTweet.getHotTopics(woeid);
+                            for (int i = 1; i<=10; i++){
                      
       out.write("\r\n");
-      out.write("                        <tr>\r\n");
-      out.write("                            <td> ");
+      out.write("                            <tr>\r\n");
+      out.write("                                 <td> ");
       out.print(i);
       out.write(" </td>\r\n");
-      out.write("                            <td> <a class = \"link\" onclick=\"chosenTrend(this)\"> ");
+      out.write("                                 <td> <a class = \"link\" onclick=\"chosenTrend(this)\"> ");
       out.print(trends.get(i-1));
       out.write("</a></td>\r\n");
-      out.write("                        </tr>                    \r\n");
+      out.write("                            </tr>                    \r\n");
       out.write("                    ");
- } 
+      } 
 
-                 
+                    
       out.write("\r\n");
       out.write("                  <script>                    \r\n");
       out.write("                    showDiv('search', 'list', 'onmap');                    \r\n");
       out.write("                    showText('topList', 'place');\r\n");
       out.write("                  </script>\r\n");
-      out.write("             ");
+      out.write("                    ");
  
-                     }
+                       }
                     
       out.write("\r\n");
       out.write("                </table>\r\n");

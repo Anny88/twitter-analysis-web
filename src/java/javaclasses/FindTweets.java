@@ -25,15 +25,16 @@ import twitter4j.conf.ConfigurationBuilder;
 public class FindTweets {
     
     public static List<String>  findByLoc(String keyword, int MAX_QUERIES, int TWEETS_PER_QUERY, double lat, double lon, String type) throws TwitterException, IOException, Exception{
-        
+        System.out.println ("TYPE is " + type);
         Twitter twitter = connectToTwitter();    
         if ((type == "s")|| (type=="hs")){
-           NLP.init();   
+            System.out.println ("TYPE is " + type);
+            NLP.init();   
            
         }
         
         ConnectDB conDB = new ConnectDB();
-        Connection con = conDB.getConnection();
+        Connection con = ConnectDB.getConnection();
         ConnectDB.dropTable();
         ConnectDB.createTable(); 
         List<String> lines = new ArrayList<>();   
@@ -101,8 +102,8 @@ public class FindTweets {
                     
                     if (tweetReady != null){
                         if (type == "s"){
-                        //identify sentiment of tweet 
-                        sentimentScore = NLP.findSentiment(tweetReady);   
+                        
+                        sentimentScore = NLP.findSentiment(tweetReady);   //identify sentiment of tweet 
                         //insert tweets with sentiments
                         ConnectDB.insertSents (tweetReady, sentimentScore, con);
                         }
