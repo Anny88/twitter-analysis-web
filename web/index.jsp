@@ -35,7 +35,7 @@
             </h3>
             <br>
             <div id = "form" >
-                <form method="POST" action ="index.jsp">
+            <form method="POST" action ="index.jsp">
                 <input type = "text" size="50" class="input" id = "place" name="woeid" value="1">
                 <input type = "submit" value="search" class = "button">  
              </form>

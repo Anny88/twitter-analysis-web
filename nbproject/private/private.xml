@@ -3,10 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/Projects/NetBeans/TwitterAnalysis/src/java/javaclasses/JavaTweet.java</file>
-            <file>file:/D:/Projects/NetBeans/TwitterAnalysis/web/index2.jsp</file>
-            <file>file:/D:/Projects/NetBeans/TwitterAnalysis/src/java/javaclasses/ConnectDB.java</file>
-            <file>file:/D:/Projects/NetBeans/TwitterAnalysis/web/index.jsp</file>
+            <file>file:/D:/Projects/NetBeans/twitter-analysis-web/web/sentiment.jsp</file>
+            <file>file:/D:/Projects/NetBeans/twitter-analysis-web/web/index.jsp</file>
+            <file>file:/D:/Projects/NetBeans/twitter-analysis-web/web/about.jsp</file>
         </group>
     </open-files>
 </project-private>

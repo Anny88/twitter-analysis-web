@@ -1,4 +1,6 @@
 <%@ page language="java" contentType="text/html;" pageEncoding="UTF-8"%>
+<%@page import = "javaclasses.JavaTweet"%>
+<%@page import = "javaclasses.FindTweets"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -39,8 +41,9 @@
                        passedPlace="1";
                    }
             %>
-            
+            <form method="POST" action ="sentiment.jsp">
             <table>
+
                 <tr>
                     <td><i>Topic:</i> </td>
                     <td><input type = "text" name = "topic" size="30" class="input" value= "<%=passedText %>" id = "topicS" placeholder="#football"></td>
@@ -49,7 +52,37 @@
                     <td><i>Location:</i> </td>
                     <td><input type = "text" name = "place" size="30" class="input" value= "<%=passedPlace %>" id = "placeS" placeholder="the World"></td>
                 </tr>
+                <tr>
+                    <td><i>Latitude</i> </td>
+                    <td><input type = "text" name = "lat" id = "lat" size="30" class="input"></td>
+                </tr>
+                <tr>
+                    <td><i>Longitude</i> </td>
+                    <td><input type = "text" name = "long" id = "long" size="30" class="input"></td>
+                </tr>
+                <tr>
+                    <td><i>Radius (miles)</i> </td>
+                    <td><input type = "number" name = "rad" size="30" class="input"></td>
+                </tr>
             </table>
+            </form> 
+   
+             <% int lat = 0;
+                int longit = 0;
+                String l1 = request.getParameter("lat"); 
+                String l2 = request.getParameter("long"); 
+                
+                if (l1 != null) { 
+                  lat = Integer.parseInt(l1);
+                }  
+                if (l2 != null) { 
+                  lat = Integer.parseInt(l2);
+                }            
+              
+              
+             %>    
+                
+                
             <br>
             
             <input type = "submit" name = "sentiment" value="analyse" class = "button" onclick="showDiv('change', 'diagramm', 'onmap'),showTextSent('headsent', 'topicS', 'placeS'), drawChart()"> <!--search div will be hidden, output div shown, text field filled with user input and chart created-->
@@ -70,7 +103,31 @@
                     zoom: 10,
                     mapTypeId: google.maps.MapTypeId.HYBRID
                 }
-            var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+            var map = new google.maps.Map(document.getElementById("map"), mapOptions);  var infoWindow = new google.maps.InfoWindow;
+                var latit =  document.getElementById("lat");    
+                var long =  document.getElementById("long"); 
+                
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        var pos = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude
+                        };
+
+                        infoWindow.setPosition(pos);
+                        infoWindow.setContent('Location found.');
+                        //place.innerHTML = "lat: " + lat + " lng: " + lng;
+                        infoWindow.open(map);
+                        map.setCenter(pos);
+                        latit.value = pos.lat;
+                        long.value = pos.lng;
+                    }, function() {
+                        handleLocationError(true, infoWindow, map.getCenter());
+                       });
+                } else {
+                // Browser doesn't support Geolocation
+                handleLocationError(false, infoWindow, map.getCenter());
+                }
             }
         </script>
 

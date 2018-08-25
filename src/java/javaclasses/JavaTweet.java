@@ -20,7 +20,6 @@ import java.util.logging.Logger;
 import static javaclasses.ConnectDB.selectSentScore;
 import static javaclasses.ConnectDB.selectTags;
 import static javaclasses.FindTweets.connectToTwitter;
-import static jdk.nashorn.internal.objects.NativeMath.round;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.parser.Parser;
@@ -253,7 +252,7 @@ public class JavaTweet  {
             Logger.getLogger(JavaTweet.class.getName()).log(Level.SEVERE, null, ex);
         }
         av = (float)sum/c;
-        System.out.println("sum: " + sum + " count: " + c);
+        System.out.println("AAAWsum: " + sum + " count: " + c);
         for (int i=0; i< 5; i++){
             System.out.println("Sentiment " + i + ": " + (float)count[i]/c*100 + "%");
         }

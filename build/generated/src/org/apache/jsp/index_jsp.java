@@ -32,7 +32,7 @@ public final class index_jsp extends org.apache.jasper.runtime.HttpJspBase
     PageContext _jspx_page_context = null;
 
     try {
-      response.setContentType("text/html; ;charset=UTF-8");
+      response.setContentType("text/html;;charset=UTF-8");
       pageContext = _jspxFactory.getPageContext(this, request, response,
       			null, true, 8192, true);
       _jspx_page_context = pageContext;
@@ -152,26 +152,24 @@ public final class index_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("            \r\n");
       out.write("            \r\n");
       out.write("            <!--go to the next page-->\r\n");
-      out.write("            <form method =\"POST\" action = \"index.jsp\">\r\n");
+      out.write("            <form method =\"POST\" action = \"hashtags.jsp\">\r\n");
       out.write("                \r\n");
-      out.write("            <input type = \"button\" value=\"Hashtags\" class=\"button\"  onclick = \"window.location.href = 'hashtags.jsp'\" > <br>\r\n");
-      out.write("            <input type =\"text\" id=\"hid\" name =\"hid\">\r\n");
-      out.write("            <a href=\"hashtags.jsp?tA= ");
-request.getParameter("hid"); 
-      out.write(" \" > Hashtags</a>\r\n");
+      out.write("                <input type = \"submit\" value=\"Hashtags\" class=\"button\"  onclick = \"window.location.href = 'hashtags.jsp'\" > <br>\r\n");
+      out.write("                <!-- hidden input for passing value to hashtags page-->\r\n");
+      out.write("                <input type =\"hidden\" id=\"hidHash\" name =\"hidHash\">                \r\n");
+      out.write("            </form>\r\n");
       out.write("            <br>\r\n");
-      out.write("            <input type = \"button\" value=\"Sentiments\" class=\"button\" onclick = \"window.location.href = 'sentiment.jsp'\">\r\n");
-      out.write("             ");
-   
-                String toAnalyze = request.getParameter("hid");  
-                if (toAnalyze!= null){
-                    session.setAttribute("chosenToAnalyze", "hh ");
-                } 
-                else session.setAttribute("chosenToAnalyze", "blaa");
-                
+      out.write("            <form method =\"POST\" action = \"sentiment.jsp\">\r\n");
+      out.write("                <input type =\"hidden\" id=\"hidSent\" name =\"hidSent\">\r\n");
+      out.write("                <input type = \"submit\"  value=\"Sentiments\" class=\"button\">\r\n");
+      out.write("            </form> \r\n");
+      out.write("            \r\n");
+      out.write("            ");
+  
+                session.setAttribute("woeid", woeid);              
             
       out.write("  \r\n");
-      out.write("            </form>\r\n");
+      out.write("            \r\n");
       out.write("            </div>\r\n");
       out.write("        </div>\r\n");
       out.write("        </div> \r\n");
