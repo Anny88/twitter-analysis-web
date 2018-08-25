@@ -9,6 +9,20 @@ import javaclasses.FindTweets;
 public final class sentiment_jsp extends org.apache.jasper.runtime.HttpJspBase
     implements org.apache.jasper.runtime.JspSourceDependent {
 
+
+                public static String getArrayString(){
+                    String result = "[";
+/*
+                    for(int i = 0; i < items.length; i++) {
+                        result += "\"" + items[i] + "\"";
+                        if(i < items.length - 1) {
+                            result += ", ";
+                        }
+                    }
+                    result += "]";*/
+                    return result;
+                }
+                
   private static final JspFactory _jspxFactory = JspFactory.getDefaultFactory();
 
   private static java.util.List<String> _jspx_dependants;
@@ -260,16 +274,26 @@ public final class sentiment_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("                   //alert(findElementById (\"topicS\").value);               \r\n");
       out.write("                   showDiv('change', 'diagramm', 'onmap');\r\n");
       out.write("                   showTextSent('headsent', 'topicS', 'placeS');\r\n");
-      out.write("                   drawChart();\r\n");
+      out.write("                   drawChart([55,0]);\r\n");
       out.write("                   \r\n");
       out.write("                </script>\r\n");
       out.write("                ");
 
                    FindTweets.findByLoc (keyword, 2, 55, latitude, longitude, "s");
+                   
                 }                
-                            
+                    int sents[] = {0,1,2};//JavaTweet.getSents();        
              
-      out.write("                    \r\n");
+      out.write("  \r\n");
+      out.write("                \r\n");
+      out.write("             ");
+      out.write("\r\n");
+      out.write("                <script>\r\n");
+      out.write("                    alertss (");
+ getArrayString(); 
+      out.write(");\r\n");
+      out.write("                </script>\r\n");
+      out.write("\r\n");
       out.write("</body>\r\n");
       out.write("</html>");
     } catch (Throwable t) {

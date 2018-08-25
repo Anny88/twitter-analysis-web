@@ -86,23 +86,25 @@ function chosenTrend(t){
         document.getElementById("chosen").innerHTML = s; 
         document.getElementById("hidHash").value = s;
         document.getElementById("hidSent").value = s;
-        alert (document.getElementById("hid").value);
+        //alert (document.getElementById("hid").value);
     }
 }
 
 function buttonClicked(name){
     document.getElementById(name).value = "clicked";
 }
-function drawChart(){
+
+
+function drawChart(sents){
 //draw chart with sample data for the page sentiment.html
     
 // set the data
   var data = [
-      {x: "Very Positive", value: 11, fill: "#004ba0"},  
-      {x: "Positive", value: 380, fill: "#a3cde0"},
-      {x: "Neutral", value: 234, fill: "#ccc"},
-      {x: "Negative", value: 400, fill: "salmon"},
-      {x: "Very negative", value: 75, fill: "crimson"}
+      {x: "Very Positive", value: sents[0], fill: "#004ba0"},  
+      {x: "Positive", value: sents[1], fill: "#a3cde0"},
+      {x: "Neutral", value: sents[2], fill: "#ccc"},
+      {x: "Negative", value: sents[3], fill: "salmon"},
+      {x: "Very negative", value: sents[4], fill: "crimson"}
           
   ];
 

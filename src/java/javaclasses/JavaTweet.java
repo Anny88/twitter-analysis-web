@@ -235,12 +235,11 @@ public class JavaTweet  {
     
     
     
-    public static void getSents (ConnectDB con){
+    public static int[] getSents (){
         ResultSet sents = ConnectDB.selectSentiments();
         int sum = 0;
-        int count[] = {0,0,0,0,0};
-        int c = 0;
-        float av = 0;
+        int count[] = {0,0,0,0,0,0,0};
+        int c = 0; //total quantity
         try {
             while (sents.next()){
                 int score = sents.getInt(1);
@@ -250,15 +249,17 @@ public class JavaTweet  {
                     count[score]++;
                 }
             }
+            count [5] = c;
+            count [6] = sum;
         } catch (SQLException ex) {
             Logger.getLogger(JavaTweet.class.getName()).log(Level.SEVERE, null, ex);
         }
-        av = (float)sum/c;
+        
         System.out.println("AAAWsum: " + sum + " count: " + c);
         for (int i=0; i< 5; i++){
             System.out.println("Sentiment " + i + ": " + (float)count[i]/c*100 + "%");
         }
-        System.out.println("\nAverage: " + av);
+        return count;
         
     }
 }

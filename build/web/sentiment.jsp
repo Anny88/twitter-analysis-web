@@ -178,6 +178,7 @@
 <% double latitude = 0;
                 double longitude = 0;
                 String keyword = "";
+                int sents[]= {0};
                 
                 String kw = request.getParameter("topicS"); 
                 String l1 = request.getParameter("lat"); 
@@ -198,23 +199,50 @@
                 }
                 
                 if (keyword != "" ){
-                //if (5 > 0) {   
-                    //call javaclass to search tweets for sentiment analysis
-                    //JavaTweet.mainy("s", latitude, longitude, keyword);
-                    
-                //}    
+                   
                 %>
-                <script>                
-                   //alert(findElementById ("topicS").value);               
+                <script>   
                    showDiv('change', 'diagramm', 'onmap');
                    showTextSent('headsent', 'topicS', 'placeS');
-                   drawChart();
                    
                 </script>
                 <%
-                   FindTweets.findByLoc (keyword, 2, 55, latitude, longitude, "s");
+                   FindTweets.findByLoc (keyword, 1, 55, latitude, longitude, "s");
+                   sents = JavaTweet.getSents(); 
                 }                
-                            
-             %>                    
+             %>  
+                
+             <%!
+                public String getArrayString(int[] items){
+                    String result = "";
+                    for(int i = 0; i < items.length; i++) {
+                        result +=  items[i] ;
+                        if(i < items.length - 1) {
+                            result += "|";
+                        }
+                    }
+                    return result;
+                }
+             %>
+                <script>
+                    function getData(){ 
+                        <% String str = "";
+                        if (sents != null) {                            
+                        str= getArrayString(sents);
+                        } %>
+                        var s="<%=str%>"; 
+                        var rawData = s.split('|');
+                        var data = [];
+                        var i;
+                        for ( i = 0; i<rawData.length;i++){
+                            data.push(parseInt(rawData[i]));
+                            //alert(data[i]);
+                        }
+                          
+                        return data; 
+                     } 
+                    drawChart (getData());
+                </script>
+
 </body>
 </html>
