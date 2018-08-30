@@ -24,7 +24,7 @@ import twitter4j.conf.ConfigurationBuilder;
 
 public class FindTweets {
     
-    public static List<String>  findByLoc(String keyword, int MAX_QUERIES, int TWEETS_PER_QUERY, double lat, double lon, String type) throws TwitterException, IOException, Exception{
+    public static List<String>  findByLoc(String keyword, int MAX_QUERIES, int TWEETS_PER_QUERY, double lat, double lon, double res, String type) throws TwitterException, IOException, Exception{
         System.out.println ("TYPE is " + type);
         Twitter twitter = connectToTwitter();    
         if ((type == "s")|| (type=="hs")){
@@ -40,7 +40,7 @@ public class FindTweets {
         List<String> lines = new ArrayList<>();   
         
         //int MAX_QUERIES, int TWEETS_PER_QUERY - as parameters 
-        double res = 50; //radius for Geolocation
+        
         String resUnit = "mi"; //miles               
          
         int	totalTweets = 0; //number of retrieved Tweets - may be less than TWEETS_PER_QUERY
@@ -68,7 +68,8 @@ public class FindTweets {
                             searchTweetsRateLimit.getSecondsUntilReset());
                     Thread.sleep((searchTweetsRateLimit.getSecondsUntilReset()+2) * 1000l);
                 }
-                Query query = new Query(keyword);                        
+                Query query = new Query(keyword);      
+                
                 query.geoCode(new GeoLocation(lat,lon), res, resUnit); 
                 query.count(TWEETS_PER_QUERY);
                 query.resultType(RECENT);

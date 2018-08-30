@@ -160,6 +160,40 @@ public class ConnectDB {
         return rs;
          
     } 
+    
+    public static String[] selectTweetsBySents (int s){
+        ResultSet rs = null;
+        String result[] = new String[5]; 
+        String selectScore = "select maintweet from tweets where score = " + s;
+                
+        try {
+            Connection con = getConnection();
+            Statement stmt = con.createStatement();
+            rs = stmt.executeQuery(selectScore);
+            //int i = 0;
+            if (rs != null){
+                for (int i = 0; i < 5; i++){
+                    if (rs.next()){
+                        result[i] = rs.getString(1);    
+                        
+                    } else {
+                        result[i] = "-";
+                    }     
+                }
+            }
+            
+            //return result;
+            //stmt.close();
+           
+        } catch (Exception e){
+            System.out.println("Exception in select by sents " + e);
+        }
+        if (result == null){
+            System.out.println ("massiv = 0");
+        }
+        
+        return result;
+    }
      
     public static ResultSet selectTags(int numberOfTags, String tagToSearch){
         ResultSet rs = null;

@@ -146,7 +146,7 @@
                         //place.innerHTML = "lat: " + lat + " lng: " + lng;
                         infoWindow.open(map);
                         map.setCenter(pos);
-                        place.value = "lat: " + pos.lat + " lng: " + pos.lng;
+                        //place.value = "lat: " + pos.lat + " lng: " + pos.lng;
                     }, function() {
                         handleLocationError(true, infoWindow, map.getCenter());
                        });

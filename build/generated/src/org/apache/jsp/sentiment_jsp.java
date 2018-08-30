@@ -3,6 +3,7 @@ package org.apache.jsp;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.jsp.*;
+import javaclasses.ConnectDB;
 import javaclasses.JavaTweet;
 import javaclasses.FindTweets;
 
@@ -10,19 +11,17 @@ public final class sentiment_jsp extends org.apache.jasper.runtime.HttpJspBase
     implements org.apache.jasper.runtime.JspSourceDependent {
 
 
-                public static String getArrayString(){
-                    String result = "[";
-/*
+                public String getArrayString(int[] items){
+                    String result = "";
                     for(int i = 0; i < items.length; i++) {
-                        result += "\"" + items[i] + "\"";
+                        result +=  items[i] ;
                         if(i < items.length - 1) {
-                            result += ", ";
+                            result += "|";
                         }
                     }
-                    result += "]";*/
                     return result;
                 }
-                
+             
   private static final JspFactory _jspxFactory = JspFactory.getDefaultFactory();
 
   private static java.util.List<String> _jspx_dependants;
@@ -57,6 +56,7 @@ public final class sentiment_jsp extends org.apache.jasper.runtime.HttpJspBase
       _jspx_out = out;
       _jspx_resourceInjector = (org.glassfish.jsp.api.ResourceInjector) application.getAttribute("com.sun.appserv.jsp.resource.injector");
 
+      out.write("\r\n");
       out.write("\r\n");
       out.write("\r\n");
       out.write("\r\n");
@@ -97,14 +97,12 @@ public final class sentiment_jsp extends org.apache.jasper.runtime.HttpJspBase
                 if (session.getAttribute("woeid") != null){
                     passedPlace = session.getAttribute("woeid").toString();
                 }
-                  
-                
-                   if (passedText == null){
-                       passedText="#news";
-                   }
-                   if (passedPlace.length() == 0){
-                       passedPlace="1";
-                   }
+                if (passedText == null){
+                    passedText="#news";
+                }
+                if (passedPlace.length() == 0){
+                    passedPlace="1";
+                }
             
       out.write("\r\n");
       out.write("            <form method=\"POST\" action =\"sentiment.jsp\">\r\n");
@@ -198,51 +196,11 @@ public final class sentiment_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("    <div id = \"chart\">\r\n");
       out.write("    </div>\r\n");
       out.write("    <br>\r\n");
-      out.write("    \r\n");
-      out.write("    <!-- table to show lists of negative, positive and neutral tweets with sample data-->\r\n");
-      out.write("    \r\n");
-      out.write("    <table>\r\n");
-      out.write("        \r\n");
-      out.write("            <th class = \"borderedTable neg\">negative tweets</th>\r\n");
-      out.write("            <th class = \"borderedTable\">neutral tweets</th>\r\n");
-      out.write("            <th class = \"borderedTable pos\">positive tweets</th>\r\n");
-      out.write("        \r\n");
-      out.write("        \r\n");
-      out.write("            <tr>\r\n");
-      out.write("                <td class = \"borderedTable neg\">99.9% Of US Politicians Are Actual Psychopaths, New Study Reveals </td>\r\n");
-      out.write("                <td class = \"borderedTable\">99.9% Of US Politicians Are Actual Psychopaths, New Study Reveals </td>\r\n");
-      out.write("                <td class = \"borderedTable pos\">99.9% Of US Politicians Are Actual Psychopaths, New Study Reveals </td>\r\n");
-      out.write("            </tr>\r\n");
-      out.write("            <tr>\r\n");
-      out.write("                <td class = \"borderedTable neg\">99.9% Of US Politicians Are Actual Psychopaths, New Study Reveals </td>\r\n");
-      out.write("                <td class = \"borderedTable\">99.9% Of US Politicians Are Actual Psychopaths, New Study Reveals </td>\r\n");
-      out.write("                <td class = \"borderedTable pos\">99.9% Of US Politicians Are Actual Psychopaths, New Study Reveals </td>\r\n");
-      out.write("            </tr>\r\n");
-      out.write("            <tr>\r\n");
-      out.write("                <td class = \"borderedTable neg\">99.9% Of US Politicians Are Actual Psychopaths, New Study Reveals </td>\r\n");
-      out.write("                <td class = \"borderedTable\">99.9% Of US Politicians Are Actual Psychopaths, New Study Reveals </td>\r\n");
-      out.write("                <td class = \"borderedTable pos\">99.9% Of US Politicians Are Actual Psychopaths, New Study Reveals </td>\r\n");
-      out.write("            </tr>\r\n");
-      out.write("            <tr>\r\n");
-      out.write("                <td class = \"borderedTable neg\">99.9% Of US Politicians Are Actual Psychopaths, New Study Reveals </td>\r\n");
-      out.write("                <td class = \"borderedTable\">99.9% Of US Politicians Are Actual Psychopaths, New Study Reveals </td>\r\n");
-      out.write("                <td class = \"borderedTable pos\">99.9% Of US Politicians Are Actual Psychopaths, New Study Reveals </td>\r\n");
-      out.write("            </tr>\r\n");
-      out.write("            <tr>\r\n");
-      out.write("                <td class = \"borderedTable neg\">99.9% Of US Politicians Are Actual Psychopaths, New Study Reveals </td>\r\n");
-      out.write("                <td class = \"borderedTable\">99.9% Of US Politicians Are Actual Psychopaths, New Study Reveals </td>\r\n");
-      out.write("                <td class = \"borderedTable pos\">99.9% Of US Politicians Are Actual Psychopaths, New Study Reveals </td>\r\n");
-      out.write("            </tr>\r\n");
-      out.write("        \r\n");
-      out.write("    </table> <br>\r\n");
-      out.write("    <input type = \"submit\" name = \"newsent\" value=\"New Sentiment Analysis\" class = \"button\" onclick=\"newSearch('change', 'diagramm', 'onmap'), deleteChart()\">\r\n");
-      out.write("    <br> <br>\r\n");
-      out.write("\r\n");
-      out.write("</div>\r\n");
-      out.write("\r\n");
+      out.write("     \r\n");
  double latitude = 0;
                 double longitude = 0;
                 String keyword = "";
+                int sents[]= {0};
                 
                 String kw = request.getParameter("topicS"); 
                 String l1 = request.getParameter("lat"); 
@@ -263,36 +221,141 @@ public final class sentiment_jsp extends org.apache.jasper.runtime.HttpJspBase
                 }
                 
                 if (keyword != "" ){
-                //if (5 > 0) {   
-                    //call javaclass to search tweets for sentiment analysis
-                    //JavaTweet.mainy("s", latitude, longitude, keyword);
-                    
-                //}    
+                   
                 
       out.write("\r\n");
-      out.write("                <script>                \r\n");
-      out.write("                   //alert(findElementById (\"topicS\").value);               \r\n");
+      out.write("                <script>   \r\n");
       out.write("                   showDiv('change', 'diagramm', 'onmap');\r\n");
-      out.write("                   showTextSent('headsent', 'topicS', 'placeS');\r\n");
-      out.write("                   drawChart([55,0]);\r\n");
+      out.write("                  \r\n");
       out.write("                   \r\n");
       out.write("                </script>\r\n");
       out.write("                ");
 
-                   FindTweets.findByLoc (keyword, 2, 55, latitude, longitude, "s");
-                   
+                   FindTweets.findByLoc (keyword, 1, 500, latitude, longitude, "s");
+                   sents = JavaTweet.getSents(); 
                 }                
-                    int sents[] = {0,1,2};//JavaTweet.getSents();        
              
       out.write("  \r\n");
       out.write("                \r\n");
       out.write("             ");
       out.write("\r\n");
       out.write("                <script>\r\n");
-      out.write("                    alertss (");
- getArrayString(); 
-      out.write(");\r\n");
+      out.write("                    function getData(){ \r\n");
+      out.write("                        ");
+ String str = "";
+                        if (sents != null) {                            
+                        str= getArrayString(sents);
+                        } 
+      out.write("\r\n");
+      out.write("                        var s=\"");
+      out.print(str);
+      out.write("\"; \r\n");
+      out.write("                        var rawData = s.split('|');\r\n");
+      out.write("                        var data = [];\r\n");
+      out.write("                        var i;\r\n");
+      out.write("                        for ( i = 0; i<rawData.length;i++){\r\n");
+      out.write("                            data.push(parseInt(rawData[i]));\r\n");
+      out.write("                            //alert(data[i]);\r\n");
+      out.write("                        }\r\n");
+      out.write("                        return data; \r\n");
+      out.write("                     } \r\n");
+      out.write("                     showTextSent('headsent', 'topicS', 'placeS');\r\n");
+      out.write("                    drawChart (getData());\r\n");
       out.write("                </script>\r\n");
+      out.write("                ");
+ 
+                    String[][] s = new String[5][5];
+                    for (int k = 0; k < 5; k++){
+                        String text[] =  ConnectDB.selectTweetsBySents(k);
+                        //{"0","1","2","3","4"};
+                        for (int m = 0; m < 5; m++){
+                            if ((text[m] == "-") || (text[m] == null) || (text[m] == "")){
+                                s[k][m] = "^-^";
+                            }
+                            else {
+                                s[k][m] =  text[m]; 
+                            }
+                            System.out.print(k + ":    " + s[k][m]);
+                        }
+                        System.out.println();
+                    }
+                    
+                
+      out.write("\r\n");
+      out.write("    <!-- table to show lists of negative, positive and neutral tweets with sample data-->\r\n");
+      out.write("    \r\n");
+      out.write("    <table>\r\n");
+      out.write("           \r\n");
+      out.write("\r\n");
+      out.write("\r\n");
+      out.write("\r\n");
+ if (s[0][0]!= "^-^") { 
+      out.write("\r\n");
+      out.write("            \r\n");
+      out.write("            <th class = \"borderedTable neg\">very negative tweets</th>\r\n");
+      out.write("            ");
+ } 
+               if (s[1][0]!= "^-^") { 
+      out.write("\r\n");
+      out.write("           <th class = \"borderedTable neg\"> negative tweets</th>\r\n");
+      out.write("            ");
+ } 
+               if (s[2][0]!= "^-^") { 
+      out.write("\r\n");
+      out.write("            <th class = \"borderedTable\">neutral tweets</th>\r\n");
+      out.write("            ");
+ } 
+               if (s[3][0]!= "^-^") { 
+      out.write("\r\n");
+      out.write("            <th class = \"borderedTable pos\">positive tweets</th>\r\n");
+      out.write("            ");
+ } 
+               if (s[4][0]!= "^-^") { 
+      out.write("\r\n");
+      out.write("            <th class = \"borderedTable pos\">very positive tweets</th>\r\n");
+      out.write("            \r\n");
+      out.write("\r\n");
+      out.write("\r\n");
+      out.write("\r\n");
+      out.write("\r\n");
+      out.write("\r\n");
+      out.write("\r\n");
+      out.write("\r\n");
+      out.write(" \r\n");
+      out.write("            ");
+ } 
+
+
+            for (int p = 0; p < 5; p++) {
+      out.write("\r\n");
+      out.write("\r\n");
+      out.write("            <tr>\r\n");
+      out.write("                ");
+ for (int j=0; j<5; j++){
+                        if (s[j][0]!= "^-^"){
+                
+      out.write("            \r\n");
+      out.write("                \r\n");
+      out.write("                <td class = \"borderedTable\"> ");
+      out.print(s[j][p]);
+      out.write(" </td>\r\n");
+      out.write("                \r\n");
+      out.write("                ");
+      }
+                    } 
+      out.write("\r\n");
+      out.write("            </tr>\r\n");
+      out.write("            \r\n");
+      out.write("            ");
+ } 
+      out.write("\r\n");
+      out.write("            \r\n");
+      out.write("        \r\n");
+      out.write("    </table> \r\n");
+      out.write("    <br>\r\n");
+      out.write("    <input type = \"submit\" name = \"newsent\" value=\"New Sentiment Analysis\" class = \"button\" onclick=\"newSearch('change', 'diagramm', 'onmap'), deleteChart()\">\r\n");
+      out.write("    <br> <br>\r\n");
+      out.write("    </div>\r\n");
       out.write("\r\n");
       out.write("</body>\r\n");
       out.write("</html>");

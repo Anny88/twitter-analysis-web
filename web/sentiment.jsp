@@ -1,3 +1,4 @@
+<%@page import="javaclasses.ConnectDB"%>
 <%@ page language="java" contentType="text/html;" pageEncoding="UTF-8"%>
 <%@page import = "javaclasses.JavaTweet"%>
 <%@page import = "javaclasses.FindTweets"%>
@@ -37,14 +38,12 @@
                 if (session.getAttribute("woeid") != null){
                     passedPlace = session.getAttribute("woeid").toString();
                 }
-                  
-                
-                   if (passedText == null){
-                       passedText="#news";
-                   }
-                   if (passedPlace.length() == 0){
-                       passedPlace="1";
-                   }
+                if (passedText == null){
+                    passedText="#news";
+                }
+                if (passedPlace.length() == 0){
+                    passedPlace="1";
+                }
             %>
             <form method="POST" action ="sentiment.jsp">
             <table>
@@ -67,7 +66,7 @@
                 </tr>
                 <tr>
                     <td><i>Radius (miles)</i> </td>
-                    <td><input type = "number" name = "rad" size="30" class="input"></td>
+                    <td><input type = "number" name = "rad" id = "rad" size="30" class="input"></td>
                 </tr>
             </table>
                 <br>
@@ -133,56 +132,17 @@
     <div id = "chart">
     </div>
     <br>
-    
-    <!-- table to show lists of negative, positive and neutral tweets with sample data-->
-    
-    <table>
-        
-            <th class = "borderedTable neg">negative tweets</th>
-            <th class = "borderedTable">neutral tweets</th>
-            <th class = "borderedTable pos">positive tweets</th>
-        
-        
-            <tr>
-                <td class = "borderedTable neg">99.9% Of US Politicians Are Actual Psychopaths, New Study Reveals </td>
-                <td class = "borderedTable">99.9% Of US Politicians Are Actual Psychopaths, New Study Reveals </td>
-                <td class = "borderedTable pos">99.9% Of US Politicians Are Actual Psychopaths, New Study Reveals </td>
-            </tr>
-            <tr>
-                <td class = "borderedTable neg">99.9% Of US Politicians Are Actual Psychopaths, New Study Reveals </td>
-                <td class = "borderedTable">99.9% Of US Politicians Are Actual Psychopaths, New Study Reveals </td>
-                <td class = "borderedTable pos">99.9% Of US Politicians Are Actual Psychopaths, New Study Reveals </td>
-            </tr>
-            <tr>
-                <td class = "borderedTable neg">99.9% Of US Politicians Are Actual Psychopaths, New Study Reveals </td>
-                <td class = "borderedTable">99.9% Of US Politicians Are Actual Psychopaths, New Study Reveals </td>
-                <td class = "borderedTable pos">99.9% Of US Politicians Are Actual Psychopaths, New Study Reveals </td>
-            </tr>
-            <tr>
-                <td class = "borderedTable neg">99.9% Of US Politicians Are Actual Psychopaths, New Study Reveals </td>
-                <td class = "borderedTable">99.9% Of US Politicians Are Actual Psychopaths, New Study Reveals </td>
-                <td class = "borderedTable pos">99.9% Of US Politicians Are Actual Psychopaths, New Study Reveals </td>
-            </tr>
-            <tr>
-                <td class = "borderedTable neg">99.9% Of US Politicians Are Actual Psychopaths, New Study Reveals </td>
-                <td class = "borderedTable">99.9% Of US Politicians Are Actual Psychopaths, New Study Reveals </td>
-                <td class = "borderedTable pos">99.9% Of US Politicians Are Actual Psychopaths, New Study Reveals </td>
-            </tr>
-        
-    </table> <br>
-    <input type = "submit" name = "newsent" value="New Sentiment Analysis" class = "button" onclick="newSearch('change', 'diagramm', 'onmap'), deleteChart()">
-    <br> <br>
-
-</div>
-
+     
 <% double latitude = 0;
                 double longitude = 0;
                 String keyword = "";
+                double radius = 500;
                 int sents[]= {0};
                 
                 String kw = request.getParameter("topicS"); 
                 String l1 = request.getParameter("lat"); 
                 String l2 = request.getParameter("long"); 
+                String rad = request.getParameter("rad");
                 
                 if (kw != null){
                   if (kw.length() == 0){
@@ -197,17 +157,20 @@
                 if (l2 != null) { 
                   longitude = Double.parseDouble(l2);
                 }
+                if ((rad != null) && (rad.length()!= 0)) { 
+                  radius = Double.parseDouble(rad);
+                }
                 
                 if (keyword != "" ){
                    
                 %>
                 <script>   
                    showDiv('change', 'diagramm', 'onmap');
-                   showTextSent('headsent', 'topicS', 'placeS');
+                  
                    
                 </script>
                 <%
-                   FindTweets.findByLoc (keyword, 1, 55, latitude, longitude, "s");
+                   FindTweets.findByLoc (keyword, 1, 500, latitude, longitude, radius, "s");
                    sents = JavaTweet.getSents(); 
                 }                
              %>  
@@ -238,11 +201,84 @@
                             data.push(parseInt(rawData[i]));
                             //alert(data[i]);
                         }
-                          
                         return data; 
                      } 
+                     showTextSent('headsent', 'topicS', 'placeS');
                     drawChart (getData());
                 </script>
+                <% 
+                    String[][] s = new String[5][5];
+                    for (int k = 0; k < 5; k++){
+                        String text[] =  ConnectDB.selectTweetsBySents(k);
+                        //{"0","1","2","3","4"};
+                        for (int m = 0; m < 5; m++){
+                            if ((text[m] == "-") || (text[m] == null) || (text[m] == "")){
+                                s[k][m] = "^-^";
+                            }
+                            else {
+                                s[k][m] =  text[m]; 
+                            }
+                            //System.out.print(k + ":    " + s[k][m]);
+                        }
+                        //System.out.println();
+                    }
+                    
+                %>
+    <!-- table to show lists of negative, positive and neutral tweets with sample data-->
+    
+    <table>
+           
+
+
+
+<% if (s[0][0]!= "^-^") { %>
+            
+            <th class = "borderedTable neg">very negative tweets</th>
+            <% } 
+               if (s[1][0]!= "^-^") { %>
+           <th class = "borderedTable neg"> negative tweets</th>
+            <% } 
+               if (s[2][0]!= "^-^") { %>
+            <th class = "borderedTable">neutral tweets</th>
+            <% } 
+               if (s[3][0]!= "^-^") { %>
+            <th class = "borderedTable pos">positive tweets</th>
+            <% } 
+               if (s[4][0]!= "^-^") { %>
+            <th class = "borderedTable pos">very positive tweets</th>
+            
+
+
+
+
+
+
+
+ 
+            <% } 
+
+
+            for (int p = 0; p < 5; p++) {%>
+
+            <tr>
+                <% for (int j=0; j<5; j++){
+                        if (s[j][0]!= "^-^"){
+                %>            
+                
+                <td class = "borderedTable"> <%=s[j][p]%> </td>
+                
+                <%      }
+                    } %>
+            </tr>
+            
+            <% } %>
+            
+        
+    </table> 
+    <br>
+    <input type = "submit" name = "newsent" value="New Sentiment Analysis" class = "button" onclick="newSearch('change', 'diagramm', 'onmap'), deleteChart()">
+    <br> <br>
+    </div>
 
 </body>
 </html>

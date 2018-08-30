@@ -53,7 +53,7 @@ public class JavaTweet  {
             
             ConnectDB.dropTable();
             ConnectDB.createTable();            
-            FindTweets.findByLoc(keyword, MAX_QUERIES,TWEETS_PER_QUERY, lat, lon, type);            
+            FindTweets.findByLoc(keyword, MAX_QUERIES,TWEETS_PER_QUERY, lat, lon, 500, type);            
             //sentiment score for the whole set of tweets (root, keyword)
             
             /*

@@ -1,6 +1,6 @@
 function inTheWorld() {
     //if user wants to search in the world - on click on label "the world" form-input will be filled
-    document.getElementById("place").value = "the World";
+    document.getElementById("place").value = "1";
 }
     
 function showDiv(search, show, map) {
@@ -100,11 +100,11 @@ function drawChart(sents){
     
 // set the data
   var data = [
-      {x: "Very Positive", value: sents[0], fill: "#004ba0"},  
-      {x: "Positive", value: sents[1], fill: "#a3cde0"},
+      {x: "Very Negative", value: sents[0], fill: "crimson"},  
+      {x: "Negative", value: sents[1], fill: "salmon"},
       {x: "Neutral", value: sents[2], fill: "#ccc"},
-      {x: "Negative", value: sents[3], fill: "salmon"},
-      {x: "Very negative", value: sents[4], fill: "crimson"}
+      {x: "Positive", value: sents[3], fill: "#a3cde0"},
+      {x: "Very Positive", value: sents[4], fill: "#004ba0"}
           
   ];
 
