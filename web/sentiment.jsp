@@ -39,7 +39,7 @@
                     passedPlace = session.getAttribute("woeid").toString();
                 }
                 if (passedText == null){
-                    passedText="#news";
+                    passedText="";
                 }
                 if (passedPlace.length() == 0){
                     passedPlace="1";
@@ -50,11 +50,11 @@
 
                 <tr>
                     <td><i>Topic:</i> </td>
-                    <td><input type = "text" name = "topicS" id = "topicS" size="30" class="input" value= "<%=passedText %>"  placeholder="#football"></td>
+                    <td><input type = "text" name = "topicS" id = "topicS" size="30" class="input" value= "<%=passedText %>"  placeholder=""></td>
                 </tr>
                 <tr>
                     <td><i>Location:</i> </td>
-                    <td><input type = "text" name = "place" size="30" class="input" value= "<%=passedPlace %>" id = "placeS" placeholder="the World"></td>
+                    <td><input type = "text" name = "placeS" size="30" class="input" value= "<%=passedPlace %>" id = "placeS" placeholder="the World"></td>
                 </tr>
                 <tr>
                     <td><i>Latitude</i> </td>
@@ -66,7 +66,7 @@
                 </tr>
                 <tr>
                     <td><i>Radius (miles)</i> </td>
-                    <td><input type = "number" name = "rad" id = "rad" size="30" class="input"></td>
+                    <td><input type = "number" name = "rad" id = "rad" size="30" class="input" placeholder = "100" ></td>
                 </tr>
             </table>
                 <br>
@@ -92,7 +92,8 @@
                     zoom: 10,
                     mapTypeId: google.maps.MapTypeId.HYBRID
                 };
-            var map = new google.maps.Map(document.getElementById("map"), mapOptions);  var infoWindow = new google.maps.InfoWindow;
+                var map = new google.maps.Map(document.getElementById("map"), mapOptions);  
+                var infoWindow = new google.maps.InfoWindow;
                 var latit =  document.getElementById("lat");    
                 var long =  document.getElementById("long"); 
                 
@@ -123,17 +124,8 @@
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyABCNA1YxzuoOpjxGPGAOT9FRsjVcTCKqo&callback=myMap"></script>
     </div>
 </div>     
-
-<div class ="center" id = "diagramm">
-    <br> 
-    
-    <h3 id = "headsent">Sentiment </h3> <br> 
-
-    <div id = "chart">
-    </div>
-    <br>
-     
-<% double latitude = 0;
+                    
+        <%      double latitude = 0;
                 double longitude = 0;
                 String keyword = "";
                 double radius = 500;
@@ -160,17 +152,27 @@
                 if ((rad != null) && (rad.length()!= 0)) { 
                   radius = Double.parseDouble(rad);
                 }
+                %> 
                 
-                if (keyword != "" ){
+                <div class ="center" id = "diagramm">
+                <br> 
+
+                <h3 id = "headsent">Sentiment of the Topic <i><b>"<%=keyword %>"</b></i> </h3> <br> 
+
+                <div id = "chart">
+                </div>
+                <br>
+                
+                <% if (keyword != "" && request.getParameter("sentiment") != null){
                    
                 %>
                 <script>   
                    showDiv('change', 'diagramm', 'onmap');
-                  
+                   //showTextSent('headsent', 'topicS', 'placeS');
                    
                 </script>
                 <%
-                   FindTweets.findByLoc (keyword, 1, 500, latitude, longitude, radius, "s");
+                   FindTweets.findByLoc (keyword, 1, 100, latitude, longitude, radius, "s");
                    sents = JavaTweet.getSents(); 
                 }                
              %>  
@@ -203,7 +205,7 @@
                         }
                         return data; 
                      } 
-                     showTextSent('headsent', 'topicS', 'placeS');
+                     
                     drawChart (getData());
                 </script>
                 <% 
@@ -227,11 +229,7 @@
     <!-- table to show lists of negative, positive and neutral tweets with sample data-->
     
     <table>
-           
-
-
-
-<% if (s[0][0]!= "^-^") { %>
+            <% if (s[0][0]!= "^-^") { %>
             
             <th class = "borderedTable neg">very negative tweets</th>
             <% } 
@@ -247,13 +245,6 @@
                if (s[4][0]!= "^-^") { %>
             <th class = "borderedTable pos">very positive tweets</th>
             
-
-
-
-
-
-
-
  
             <% } 
 

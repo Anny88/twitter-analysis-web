@@ -164,7 +164,7 @@ public class ConnectDB {
     public static String[] selectTweetsBySents (int s){
         ResultSet rs = null;
         String result[] = new String[5]; 
-        String selectScore = "select maintweet from tweets where score = " + s;
+        String selectScore = "select distinct maintweet from tweets where score = " + s;
                 
         try {
             Connection con = getConnection();

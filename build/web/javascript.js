@@ -2,7 +2,7 @@ function inTheWorld() {
     //if user wants to search in the world - on click on label "the world" form-input will be filled
     document.getElementById("place").value = "1";
 }
-    
+  
 function showDiv(search, show, map) {
     //show hidden div with search result - for pages 
     //index, hashtags and sentiments
@@ -10,7 +10,7 @@ function showDiv(search, show, map) {
     var listDiv = document.getElementById(show);    
     var onmap = document.getElementById(map);
     
-    searchDiv.style.display = "none";
+    searchDiv.style.display = "none";  
     listDiv.style.display = "block";    
     onmap.innerHTML = "on a Google map";
 }    
@@ -46,10 +46,14 @@ function showTextSent(label, topic, place){
         place.value = "the World";
     }
     if (topic.value == "") {
-        topic.value = "#football";    
+      //  topic.value = "#football";    
     }
-    label.innerHTML = "Sentiment of the Topic <b><i>"+ topic.value + "</i> in "+ place.value + "</b>";
+    if (topic.value != ""){
+ 
+        label.innerHTML = "Sentiment of the Topic <b><i>"+ topic.value + "</i> in "+ place.value + "</b>";
+    }
 }
+
 
 function showTextHash(label, topic, place, sent){
     //put user input from search to a label in result div  

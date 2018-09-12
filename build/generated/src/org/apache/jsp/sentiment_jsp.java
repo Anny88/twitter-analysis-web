@@ -98,7 +98,7 @@ public final class sentiment_jsp extends org.apache.jasper.runtime.HttpJspBase
                     passedPlace = session.getAttribute("woeid").toString();
                 }
                 if (passedText == null){
-                    passedText="#news";
+                    passedText="";
                 }
                 if (passedPlace.length() == 0){
                     passedPlace="1";
@@ -112,11 +112,11 @@ public final class sentiment_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("                    <td><i>Topic:</i> </td>\r\n");
       out.write("                    <td><input type = \"text\" name = \"topicS\" id = \"topicS\" size=\"30\" class=\"input\" value= \"");
       out.print(passedText );
-      out.write("\"  placeholder=\"#football\"></td>\r\n");
+      out.write("\"  placeholder=\"\"></td>\r\n");
       out.write("                </tr>\r\n");
       out.write("                <tr>\r\n");
       out.write("                    <td><i>Location:</i> </td>\r\n");
-      out.write("                    <td><input type = \"text\" name = \"place\" size=\"30\" class=\"input\" value= \"");
+      out.write("                    <td><input type = \"text\" name = \"placeS\" size=\"30\" class=\"input\" value= \"");
       out.print(passedPlace );
       out.write("\" id = \"placeS\" placeholder=\"the World\"></td>\r\n");
       out.write("                </tr>\r\n");
@@ -130,7 +130,7 @@ public final class sentiment_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("                </tr>\r\n");
       out.write("                <tr>\r\n");
       out.write("                    <td><i>Radius (miles)</i> </td>\r\n");
-      out.write("                    <td><input type = \"number\" name = \"rad\" size=\"30\" class=\"input\"></td>\r\n");
+      out.write("                    <td><input type = \"number\" name = \"rad\" id = \"rad\" size=\"30\" class=\"input\" placeholder = \"100\" ></td>\r\n");
       out.write("                </tr>\r\n");
       out.write("            </table>\r\n");
       out.write("                <br>\r\n");
@@ -156,7 +156,8 @@ public final class sentiment_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("                    zoom: 10,\r\n");
       out.write("                    mapTypeId: google.maps.MapTypeId.HYBRID\r\n");
       out.write("                };\r\n");
-      out.write("            var map = new google.maps.Map(document.getElementById(\"map\"), mapOptions);  var infoWindow = new google.maps.InfoWindow;\r\n");
+      out.write("                var map = new google.maps.Map(document.getElementById(\"map\"), mapOptions);  \r\n");
+      out.write("                var infoWindow = new google.maps.InfoWindow;\r\n");
       out.write("                var latit =  document.getElementById(\"lat\");    \r\n");
       out.write("                var long =  document.getElementById(\"long\"); \r\n");
       out.write("                \r\n");
@@ -187,24 +188,18 @@ public final class sentiment_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("        <script src=\"https://maps.googleapis.com/maps/api/js?key=AIzaSyABCNA1YxzuoOpjxGPGAOT9FRsjVcTCKqo&callback=myMap\"></script>\r\n");
       out.write("    </div>\r\n");
       out.write("</div>     \r\n");
-      out.write("\r\n");
-      out.write("<div class =\"center\" id = \"diagramm\">\r\n");
-      out.write("    <br> \r\n");
-      out.write("    \r\n");
-      out.write("    <h3 id = \"headsent\">Sentiment </h3> <br> \r\n");
-      out.write("\r\n");
-      out.write("    <div id = \"chart\">\r\n");
-      out.write("    </div>\r\n");
-      out.write("    <br>\r\n");
-      out.write("     \r\n");
- double latitude = 0;
+      out.write("                    \r\n");
+      out.write("        ");
+      double latitude = 0;
                 double longitude = 0;
                 String keyword = "";
+                double radius = 500;
                 int sents[]= {0};
                 
                 String kw = request.getParameter("topicS"); 
                 String l1 = request.getParameter("lat"); 
                 String l2 = request.getParameter("long"); 
+                String rad = request.getParameter("rad");
                 
                 if (kw != null){
                   if (kw.length() == 0){
@@ -219,19 +214,36 @@ public final class sentiment_jsp extends org.apache.jasper.runtime.HttpJspBase
                 if (l2 != null) { 
                   longitude = Double.parseDouble(l2);
                 }
+                if ((rad != null) && (rad.length()!= 0)) { 
+                  radius = Double.parseDouble(rad);
+                }
                 
-                if (keyword != "" ){
+      out.write(" \r\n");
+      out.write("                \r\n");
+      out.write("                <div class =\"center\" id = \"diagramm\">\r\n");
+      out.write("                <br> \r\n");
+      out.write("\r\n");
+      out.write("                <h3 id = \"headsent\">Sentiment of the Topic <i><b>\"");
+      out.print(keyword );
+      out.write("\"</b></i> </h3> <br> \r\n");
+      out.write("\r\n");
+      out.write("                <div id = \"chart\">\r\n");
+      out.write("                </div>\r\n");
+      out.write("                <br>\r\n");
+      out.write("                \r\n");
+      out.write("                ");
+ if (keyword != "" ){
                    
                 
       out.write("\r\n");
       out.write("                <script>   \r\n");
       out.write("                   showDiv('change', 'diagramm', 'onmap');\r\n");
-      out.write("                  \r\n");
+      out.write("                   //showTextSent('headsent', 'topicS', 'placeS');\r\n");
       out.write("                   \r\n");
       out.write("                </script>\r\n");
       out.write("                ");
 
-                   FindTweets.findByLoc (keyword, 1, 500, latitude, longitude, "s");
+                   FindTweets.findByLoc (keyword, 1, 100, latitude, longitude, radius, "s");
                    sents = JavaTweet.getSents(); 
                 }                
              
@@ -259,7 +271,7 @@ public final class sentiment_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("                        }\r\n");
       out.write("                        return data; \r\n");
       out.write("                     } \r\n");
-      out.write("                     showTextSent('headsent', 'topicS', 'placeS');\r\n");
+      out.write("                     \r\n");
       out.write("                    drawChart (getData());\r\n");
       out.write("                </script>\r\n");
       out.write("                ");
@@ -275,9 +287,9 @@ public final class sentiment_jsp extends org.apache.jasper.runtime.HttpJspBase
                             else {
                                 s[k][m] =  text[m]; 
                             }
-                            System.out.print(k + ":    " + s[k][m]);
+                            //System.out.print(k + ":    " + s[k][m]);
                         }
-                        System.out.println();
+                        //System.out.println();
                     }
                     
                 
@@ -285,10 +297,7 @@ public final class sentiment_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("    <!-- table to show lists of negative, positive and neutral tweets with sample data-->\r\n");
       out.write("    \r\n");
       out.write("    <table>\r\n");
-      out.write("           \r\n");
-      out.write("\r\n");
-      out.write("\r\n");
-      out.write("\r\n");
+      out.write("            ");
  if (s[0][0]!= "^-^") { 
       out.write("\r\n");
       out.write("            \r\n");
@@ -314,13 +323,6 @@ public final class sentiment_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("\r\n");
       out.write("            <th class = \"borderedTable pos\">very positive tweets</th>\r\n");
       out.write("            \r\n");
-      out.write("\r\n");
-      out.write("\r\n");
-      out.write("\r\n");
-      out.write("\r\n");
-      out.write("\r\n");
-      out.write("\r\n");
-      out.write("\r\n");
       out.write(" \r\n");
       out.write("            ");
  } 

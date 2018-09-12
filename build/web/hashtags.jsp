@@ -1,3 +1,8 @@
+
+<%@page import="javaclasses.ConnectDB"%>
+<%@page import="javaclasses.TreeNode"%>
+<%@page import="javaclasses.JavaTweet"%>
+<%@page import="javaclasses.FindTweets"%>
 <%@ page language="java" contentType="text/html;" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -116,33 +121,46 @@
             <%  request.setCharacterEncoding("UTF-8");
                 String  passedText = request.getParameter("hidHash");
                 String  passedPlace = session.getAttribute("woeid").toString(); 
-                
-                   if (passedText == null){
-                       passedText="#news";
-                   }
-                   if (passedPlace == null){
-                       passedPlace="1";
-                   }
+                if (session.getAttribute("woeid") != null){
+                    passedPlace = session.getAttribute("woeid").toString();
+                }
+                if (passedText == null){
+                    passedText="#news";
+                }
+                if (passedPlace == null){
+                    passedPlace="1";
+                }
             %>
+            <form method="POST" action ="hashtags.jsp">
             <table>
                 <tr>
                     <td><i>Topic:</i> </td>
-                    <td><input type = "text" name = "topic" size="30" class="input" id = "topicH" value= "<%=passedText %>"> </td>
+                    <td><input type = "text" name = "topicH" size="30" class="input" id = "topicH" value= "<%=passedText %>"> </td>
                 </tr><br>
                 <tr>
                     <td><i>Location:</i> </td>
-                    <td><input type = "text" name = "place" size="30" class="input" value = "<%=passedPlace %>" id = "placeH" placeholder="the World"></td>
+                    <td><input type = "text" name = "placeH" size="30" class="input" value = "<%=passedPlace %>" id = "placeH" placeholder="the World"></td>
                 </tr>
-                
-             
-               
+                 <tr>
+                    <td><i>Latitude</i> </td>
+                    <td><input type = "text" name = "latH" id = "latH" size="30" class="input"></td>
+                </tr>
+                <tr>
+                    <td><i>Longitude</i> </td>
+                    <td><input type = "text" name = "longH" id = "longH" size="30" class="input"></td>
+                </tr>
+                <tr>
+                    <td><i>Radius (miles)</i> </td>
+                    <td><input type = "number" name = "radH" id = "radH" size="30" class="input" placeholder = "100" ></td>
+                </tr>
             </table>
+            
             <br>
             Include Sentiment Analysis <input type="checkbox" name="sentim" id = "senton" value="on">
             <br><br>
             
-            <input type = "submit" name = "sentiment" value="analyse" class = "button" onclick="showDiv('changeH', 'tree', 'onmap'),showTextHash('headhash', 'topicH', 'placeH', 'senton')"> <!--search div will be hidden, output div shown and text field filled with user input-->
-
+            <input type = "submit" name = "submit" value="analyse" class = "button" > <!--search div will be hidden, output div shown and text field filled with user input-->
+            </form>
         </div>      
             
     </div>
@@ -159,7 +177,32 @@
                     zoom: 10,
                     mapTypeId: google.maps.MapTypeId.HYBRID
                 }
-            var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+                var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+                var infoWindow = new google.maps.InfoWindow;
+                var latit =  document.getElementById("latH");    
+                var long =  document.getElementById("longH"); 
+                
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        var pos = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude
+                        };
+
+                        infoWindow.setPosition(pos);
+                        infoWindow.setContent('Location found.');
+                        //place.innerHTML = "lat: " + lat + " lng: " + lng;
+                        infoWindow.open(map);
+                        map.setCenter(pos);
+                        latit.value = pos.lat;
+                        long.value = pos.lng;
+                    }, function() {
+                        handleLocationError(true, infoWindow, map.getCenter());
+                       });
+                } else {
+                // Browser doesn't support Geolocation
+                handleLocationError(false, infoWindow, map.getCenter());
+                } 
             }
         </script>
 
@@ -167,10 +210,41 @@
     </div>
 </div>     
 
+<%              double latitude = 0;
+                double longitude = 0;
+                String keyword = "";
+                double radius = 500;
+                int sents[]= {0};
+                
+                String kw = request.getParameter("topicH"); 
+                String l1 = request.getParameter("latH"); 
+                String l2 = request.getParameter("longH"); 
+                String rad = request.getParameter("radH");
+                
+                if (kw != null){
+                  if (kw.length() == 0){
+                      kw = "#news";
+                  }  
+                  keyword = kw.toString();
+                }
+                
+                if (l1 != null) { 
+                  latitude = Double.parseDouble(l1);
+                }  
+                if (l2 != null) { 
+                  longitude = Double.parseDouble(l2);
+                }
+                if ((rad != null) && (rad.length()!= 0)) { 
+                  radius = Double.parseDouble(rad);
+                }
+               %>               
+                
+                
+                
 <div  id = "tree">
     
     <br>
-    <span id = "headhash">Hashtags-tree </span> 
+    <span id = "headhash">Hashtags-Tree for the Topic <i><b>"<%=keyword %>"</b></i> </span> 
     <input id = "new" type = "submit" name = "newhash" value="New Hashtags Analysis" class = "button" onclick="newSearch('changeH', 'tree', 'onmap'), hide()">
     <br> 
     <h4 class ="center"><i>Click on the node to see its children</i></h4>
@@ -179,8 +253,8 @@
         <br>
        
         <div  id ="root" class = "root center" >
-            <span> Root </span><br><br>
-            <span>#football</span>
+            <br>
+            <span><b><%=keyword %></b></span>
         </div>
         
         <!--lines root -> level1-->
@@ -378,11 +452,23 @@
         
     </div>
     <br>
-    
-    
-    
-
+   
 </div>
-  
+        <%//&& "POST".equalsIgnoreCase(request.getMethod())
+        if (keyword != ""  && request.getParameter("submit") != null) {
+        %>
+            <script>
+                showDiv('changeH', 'tree', 'onmap');
+                //onclick="showTextHash('headhash', 'topicH', 'placeH', 'senton')"
+            </script>
+        <%    
+            FindTweets.findByLoc (keyword, 1, 100, latitude, longitude, radius, "h");
+            ConnectDB con = new ConnectDB();
+            TreeNode tn = new TreeNode (keyword.toLowerCase(), 100, null); 
+            TreeNode tree =  JavaTweet.createHashtagsTree(tn, 15, keyword, false, 0, con);  
+            
+        }
+
+        %>    
 </body>
 <html>
