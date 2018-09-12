@@ -1,4 +1,5 @@
 
+<%@page import="java.util.List"%>
 <%@page import="javaclasses.ConnectDB"%>
 <%@page import="javaclasses.TreeNode"%>
 <%@page import="javaclasses.JavaTweet"%>
@@ -242,7 +243,24 @@
                 
                 
 <div  id = "tree">
-    
+    <%    
+            FindTweets.findByLoc (keyword, 1, 100, latitude, longitude, radius, "h");
+            ConnectDB con = new ConnectDB();
+            TreeNode tn = new TreeNode (keyword.toLowerCase(), 100, null); 
+            TreeNode tree;
+            tree = JavaTweet.createHashtagsTree(tn, 15, keyword, false, 0, con); 
+            //tree.recursivePrint();
+            String tag = tree.getTag();
+            String v = tree.getValue();
+            List <TreeNode> children = tree.getChildren(); 
+            String child = "";
+            for (int j = 0; j< children.size(); j++){
+                child += children.get(j).getTag() + " " + children.get(j).getValue() + "    ";
+            }
+            
+            
+        %>   
+        
     <br>
     <span id = "headhash">Hashtags-Tree for the Topic <i><b>"<%=keyword %>"</b></i> </span> 
     <input id = "new" type = "submit" name = "newhash" value="New Hashtags Analysis" class = "button" onclick="newSearch('changeH', 'tree', 'onmap'), hide()">
@@ -256,6 +274,8 @@
             <br>
             <span><b><%=keyword %></b></span>
         </div>
+        <br>
+        
         
         <!--lines root -> level1-->
         
@@ -270,26 +290,30 @@
         <!-- level 1: -->
         
         
-        <div id = "level1" class = "center">
-        
-            <div id = "tag1" class = "level1 red">
-                <span>#tag1</span><br>
-                <span>Value: 20% </span>
-            </div>
-            <div id = "tag2" class = "level1 red ">
-                <span>#tag2</span><br>
-                <span>Value: 20% </span>
-            </div>
-            <div id = "tag3" class = "level1 grey">
-                <span>#tag3</span><br>
-                <span>Value: 20% </span>
-            </div>
-            <div id = "tag4" class = "level1 blue">
-                <span>#tag4</span><br>
-                <span>Value: 20% </span>
-            </div>
+        <div id = "level1" class="center">
+            
+         <% 
+            double width = 100/(children.size()+1);
+            if (children.size() > 8) {
+                width = 8;
+            }
+            for (int k = 0; k < children.size(); k++){
+                String id = "tag" + k;
+            
+         %>   
+                <div id="<%=id %>" class = "level1 grey ">
+                    <span><%=id %></span><br>
+                    <span><b><%=children.get(k).getTag() %></b></span><br>
+                    <span>Value: <%=children.get(k).getValue() %>% </span>
+                </div> 
+                <script>
+                    document.getElementById('<%=id %>').style.width =  "<%=width %>%";
+                </script>
+         <%      
+            } 
+        %>
+        <br>
         </div>
-        
         
         <!--lines level1 -> level2-->
         
@@ -319,11 +343,45 @@
         
         
         <!-- level 2: -->
+        <div class = " center">
         
+        <% for (int k = 0; k < children.size(); k ++){  
+              
+              if (children.get(k).getChildren().size()!= 0){
+                  List <TreeNode> children2 = children.get(k).getChildren();
+                  double width2 = 100/children2.size();
+                  if (width2 < 35) {
+                      width2 = 35;
+                  }
+         %>
+                  <div style ="width: <%=width %>%; display: inline-block; vertical-align: top;">
+         <%
+                  for (int m = 0; m < children2.size(); m++) {      
+                        String id2 = "tag" + k + "-" + m;
+         %>             
+                            <div id="<%=id2 %>" class = "level1 grey">
+                               <span><%=id2 %></span><br>
+                               <span><b><%=children2.get(m).getTag() %></b></span><br>
+                               <span>Value: <%=children2.get(m).getValue() %>% </span>
+                            </div> 
+                        
+                        <script>
+                            document.getElementById('<%=id2 %>').style.width =  "<%=width2 %>%";
+                        </script>
+        <%        }
+                  
+        %>        
+                </div>
+                  <script> 
+                      //document.getElementById('idbox<%=k %>').style.width =  "<%=width %>%"; 
+                  </script>
+        <%       }
+            }
+        %>
         
-            
-        
-        <div id= "box1" class = "box center">
+        </div>
+        <br>
+      <!--  <div>
             <div class = "level2 red ">
                 <span>#tag11</span><br>
                 <span>35% </span>
@@ -409,7 +467,7 @@
         </svg>
         <!-- level 3: -->
         
-        
+        <!--
         <div id = "box1-2" class = "box center">
             <div class = "level2 red ">
                 <span>#tag111</span><br>
@@ -448,12 +506,12 @@
                 <span>20% </span>
             </div>
             
-        </div>
+        </div> 
         
-    </div>
+    </div> -->
     <br>
    
-</div>
+
         <%//&& "POST".equalsIgnoreCase(request.getMethod())
         if (keyword != ""  && request.getParameter("submit") != null) {
         %>
@@ -461,14 +519,12 @@
                 showDiv('changeH', 'tree', 'onmap');
                 //onclick="showTextHash('headhash', 'topicH', 'placeH', 'senton')"
             </script>
-        <%    
-            FindTweets.findByLoc (keyword, 1, 100, latitude, longitude, radius, "h");
-            ConnectDB con = new ConnectDB();
-            TreeNode tn = new TreeNode (keyword.toLowerCase(), 100, null); 
-            TreeNode tree =  JavaTweet.createHashtagsTree(tn, 15, keyword, false, 0, con);  
-            
-        }
-
-        %>    
+        
+        
+        <!--
+        <span>   "<%=tag %>" with value  "<%=v %>"</span> <br>
+        <span>   "<%=child %>" </span> -->
+        <% } %>
+  </div>
 </body>
 <html>

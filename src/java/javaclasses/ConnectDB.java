@@ -205,7 +205,7 @@ public class ConnectDB {
         }
         selectTags+= " from tweets"; 
         
-        if (tagToSearch != null){
+        if ((tagToSearch != "0") && (tagToSearch != null)){
             selectTags+= " where tag1 = '"+tagToSearch+"' ";
             for (int i=1; i<numberOfTags; i++){
                 String num = Integer.toString(i+1);

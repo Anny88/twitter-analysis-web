@@ -55,7 +55,10 @@ public class TreeNode  {
     } 
      
     public List<TreeNode> getChildren (){
-        return children;
+        if (children != null){
+            return children;
+        }
+        else return null;
     }
        
     
@@ -71,7 +74,7 @@ public class TreeNode  {
         for (int j = 0; j < 5; j++){
             System.out.println ("   Score"+ j + ": " + scores[j]);
         }    
-        System.out.print ("      Count: "+ scores[5] + " Sum: " + scores[6]);
+        System.out.print ("Count: "+ scores[5] + " Sum: " + scores[6]);
         System.out.println (" Average: "+ (float)scores[6]/scores[5]);
         TreeNode result = null;
         

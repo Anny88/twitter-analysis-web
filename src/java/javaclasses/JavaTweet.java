@@ -111,8 +111,10 @@ public class JavaTweet  {
             while (rs.next()) {
                 count++;
                 for (int j = 1; j <= numberOfTags; j++){
-                    String tag = (rs.getString(j));                    
-                    if (tag!= null){                        
+                    String tag = (rs.getString(j));   
+                   
+                    if (tag!= null){        
+                        //System.out.println("this " + tag);
                         String tagLC = tag.toLowerCase();
                         if (baum.recursiveSearch(tagLC)== null){
                             if (tags.get(tagLC) == null){
