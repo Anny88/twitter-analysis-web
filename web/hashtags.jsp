@@ -214,6 +214,7 @@
 <%              double latitude = 0;
                 double longitude = 0;
                 String keyword = "";
+                String selected;
                 double radius = 500;
                 int sents[]= {0};
                 
@@ -221,6 +222,7 @@
                 String l1 = request.getParameter("latH"); 
                 String l2 = request.getParameter("longH"); 
                 String rad = request.getParameter("radH");
+                //selected = request.getParameterValues("sentim");
                 
                 if (kw != null){
                   if (kw.length() == 0){
@@ -238,31 +240,68 @@
                 if ((rad != null) && (rad.length()!= 0)) { 
                   radius = Double.parseDouble(rad);
                 }
-               %>               
-                
-                
+                if (request.getParameterValues("sentim") != null){
+                    selected = "including sentiment analysis";
+                }
+                else selected = "";
+               %>
                 
 <div  id = "tree">
     <%    
-            FindTweets.findByLoc (keyword, 1, 100, latitude, longitude, radius, "h");
+            
             ConnectDB con = new ConnectDB();
             TreeNode tn = new TreeNode (keyword.toLowerCase(), 100, null); 
             TreeNode tree;
-            tree = JavaTweet.createHashtagsTree(tn, 15, keyword, false, 0, con); 
-            //tree.recursivePrint();
-            String tag = tree.getTag();
-            String v = tree.getValue();
-            List <TreeNode> children = tree.getChildren(); 
-            String child = "";
-            for (int j = 0; j< children.size(); j++){
-                child += children.get(j).getTag() + " " + children.get(j).getValue() + "    ";
+            int scores[];
+            double average = 0;
+            String color = "black";
+            String scores2 = "fu";
+            if (selected == "" || selected == null) {
+                FindTweets.findByLoc (keyword, 1, 100, latitude, longitude, radius, "h");
+                tree = JavaTweet.createHashtagsTree(tn, 15, keyword, false, 0, con); 
             }
-            
+          
+            else {
+                FindTweets.findByLoc (keyword, 1, 100, latitude, longitude, radius, "hs");
+                tree = JavaTweet.createHashtagsTree(tn, 15, keyword, true, 0, con); 
+                scores = ConnectDB.selectSentScore(15, keyword.toLowerCase(), true);
+                if (scores[5] == 0){
+                        scores[5] = 1;
+                    }
+                average = scores[6]/scores[5];
+                
+                if (average >=0 && average <=0.8){
+                    color = "dred";
+                }
+                if (average >0.8 && average <1.5){
+                    color = "red";
+                }
+                if (average >=1.5 && average <2.5){
+                    color = "grey";
+                }
+                if (average >=2.5 && average <3.2){
+                    color = "blue";
+                }
+                if (average >=3.2 && average <=4){
+                    color = "dblue";
+                }
+                    
+            }
+            //if (tree != null) {
+            //tree.recursivePrint();
+                String tag = tree.getTag();
+                String v = tree.getValue();
+                List <TreeNode> children = tree.getChildren(); 
+                String child = "";
+                for (int j = 0; j< children.size(); j++){
+                    child += children.get(j).getTag() + " " + children.get(j).getValue() + "    ";
+                }
+            //}
             
         %>   
         
     <br>
-    <span id = "headhash">Hashtags-Tree for the Topic <i><b>"<%=keyword %>"</b></i> </span> 
+    <span id = "headhash">Hashtags-Tree for the Topic <i><b>"<%=keyword %>"</b> <%=selected %> </i></span> 
     <input id = "new" type = "submit" name = "newhash" value="New Hashtags Analysis" class = "button" onclick="newSearch('changeH', 'tree', 'onmap'), hide()">
     <br> 
     <h4 class ="center"><i>Click on the node to see its children</i></h4>
@@ -270,7 +309,7 @@
     <div id = "tree-structure">
         <br>
        
-        <div  id ="root" class = "root center" >
+        <div  id ="root" class = "root center <%=color %>" >
             <br>
             <span><b><%=keyword %></b></span>
         </div>
@@ -293,15 +332,41 @@
         <div id = "level1" class="center">
             
          <% 
-            double width = 100/(children.size()+1);
+            double width = 100/(children.size()) -3;
+            
             if (children.size() > 8) {
                 width = 8;
             }
             for (int k = 0; k < children.size(); k++){
                 String id = "tag" + k;
+                String color1 = "black";
+                if (selected != "" || selected != null) {
+                    
+                    int scores1[] = children.get(k).getScores();
+                    if (scores1[5] == 0){
+                        scores1[5] = 1;
+                    }
+                    double average1 = scores1[6]/scores1[5];
+
+                    if (average1 >=0 && average1 <=0.8){
+                        color1 = "dred";
+                    }
+                    if (average1 >0.8 && average1 <1.5){
+                        color1 = "red";
+                    }
+                    if (average1 >=1.5 && average1 <2.5){
+                        color1 = "grey";
+                    }
+                    if (average1 >=2.5 && average1 <3.2){
+                        color1 = "blue";
+                    }
+                    if (average1 >=3.2 && average1 <=4){
+                        color1 = "dblue";
+                    }
+                }
             
          %>   
-                <div id="<%=id %>" class = "level1 grey ">
+         <div id="<%=id %>" class = "level1 <%=color1 %>">
                     <span><%=id %></span><br>
                     <span><b><%=children.get(k).getTag() %></b></span><br>
                     <span>Value: <%=children.get(k).getValue() %>% </span>
@@ -347,19 +412,46 @@
         
         <% for (int k = 0; k < children.size(); k ++){  
               
-              if (children.get(k).getChildren().size()!= 0){
-                  List <TreeNode> children2 = children.get(k).getChildren();
-                  double width2 = 100/children2.size();
-                  if (width2 < 35) {
-                      width2 = 35;
-                  }
+             
          %>
                   <div style ="width: <%=width %>%; display: inline-block; vertical-align: top;">
-         <%
+         <%       
+                  if (children.get(k).getChildren().size()!= 0){
+                  List <TreeNode> children2 = children.get(k).getChildren();
+                  double width2 = 100/children2.size();
+                  if (width2 < 40) {
+                      width2 = 40;
+                  }
                   for (int m = 0; m < children2.size(); m++) {      
                         String id2 = "tag" + k + "-" + m;
+                        String color2 = "black";
+                        if (selected != "" || selected != null) {
+
+                            int scores3[] = children2.get(m).getScores();
+                            
+                            if (scores3[5] == 0){
+                                scores3[5] = 1;
+                            }
+                            double average2 = scores3[6]/scores3[5];
+
+                            if (average2 >=0 && average2 <=0.8){
+                                color2 = "dred";
+                            }
+                            if (average2 >0.8 && average2 <1.5){
+                                color2 = "red";
+                            }
+                            if (average2 >=1.5 && average2 <2.5){
+                                color2 = "grey";
+                            }
+                            if (average2 >=2.5 && average2 <3.2){
+                                color2 = "blue";
+                            }
+                            if (average2 >=3.2 && average2 <=4){
+                                color2 = "dblue";
+                            }
+                }
          %>             
-                            <div id="<%=id2 %>" class = "level1 grey">
+                            <div id="<%=id2 %>" class = "level1 <%=color %>">
                                <span><%=id2 %></span><br>
                                <span><b><%=children2.get(m).getTag() %></b></span><br>
                                <span>Value: <%=children2.get(m).getValue() %>% </span>
@@ -371,12 +463,13 @@
         <%        }
                   
         %>        
-                </div>
+                
                   <script> 
                       //document.getElementById('idbox<%=k %>').style.width =  "<%=width %>%"; 
                   </script>
         <%       }
-            }
+         %>        </div>
+         <%   }
         %>
         
         </div>

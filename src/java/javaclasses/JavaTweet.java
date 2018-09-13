@@ -168,6 +168,9 @@ public class JavaTweet  {
                     catch (Exception e){
                         System.out.println("Exception in Sentiment Scores Select: " + e);
                     }
+                    for (int o=0; o< 7; o++){
+                        System.out.println("SCORES " + o + " " + Scores[o]);
+                    }
                 }
                 //add a new Node with Hashtag, Value and Sentiment Score to the Tree
                 baum.recursiveSearch (tagToSearch).addChild(popTags[k], popValues[k], Scores);

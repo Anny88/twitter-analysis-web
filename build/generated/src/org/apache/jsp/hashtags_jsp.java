@@ -3,6 +3,10 @@ package org.apache.jsp;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.jsp.*;
+import java.util.List;
+import javaclasses.ConnectDB;
+import javaclasses.TreeNode;
+import javaclasses.JavaTweet;
 import javaclasses.FindTweets;
 
 public final class hashtags_jsp extends org.apache.jasper.runtime.HttpJspBase
@@ -42,6 +46,11 @@ public final class hashtags_jsp extends org.apache.jasper.runtime.HttpJspBase
       _jspx_out = out;
       _jspx_resourceInjector = (org.glassfish.jsp.api.ResourceInjector) application.getAttribute("com.sun.appserv.jsp.resource.injector");
 
+      out.write("\r\n");
+      out.write("\r\n");
+      out.write("\r\n");
+      out.write("\r\n");
+      out.write("\r\n");
       out.write("\r\n");
       out.write("\r\n");
       out.write("<!DOCTYPE html>\r\n");
@@ -159,16 +168,19 @@ public final class hashtags_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("            \r\n");
       out.write("            \r\n");
       out.write("            ");
-  request.setCharacterEncoding("UTF-8");
+  int submitted = 0;
+                request.setCharacterEncoding("UTF-8");
                 String  passedText = request.getParameter("hidHash");
                 String  passedPlace = session.getAttribute("woeid").toString(); 
-                
-                   if (passedText == null){
-                       passedText="#news";
-                   }
-                   if (passedPlace == null){
-                       passedPlace="1";
-                   }
+                if (session.getAttribute("woeid") != null){
+                    passedPlace = session.getAttribute("woeid").toString();
+                }
+                if (passedText == null){
+                    passedText="#news";
+                }
+                if (passedPlace == null){
+                    passedPlace="1";
+                }
             
       out.write("\r\n");
       out.write("            <form method=\"POST\" action =\"hashtags.jsp\">\r\n");
@@ -197,15 +209,13 @@ public final class hashtags_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("                    <td><i>Radius (miles)</i> </td>\r\n");
       out.write("                    <td><input type = \"number\" name = \"radH\" id = \"radH\" size=\"30\" class=\"input\" placeholder = \"100\" ></td>\r\n");
       out.write("                </tr>\r\n");
-      out.write("             \r\n");
-      out.write("               \r\n");
       out.write("            </table>\r\n");
       out.write("            \r\n");
       out.write("            <br>\r\n");
       out.write("            Include Sentiment Analysis <input type=\"checkbox\" name=\"sentim\" id = \"senton\" value=\"on\">\r\n");
       out.write("            <br><br>\r\n");
       out.write("            \r\n");
-      out.write("            <input type = \"submit\" name = \"submit\" value=\"analyse\" class = \"button\" onclick=\"showTextHash('headhash', 'topicH', 'placeH', 'senton')\"> <!--search div will be hidden, output div shown and text field filled with user input-->\r\n");
+      out.write("            <input type = \"submit\" name = \"submit\" value=\"analyse\" class = \"button\" > <!--search div will be hidden, output div shown and text field filled with user input-->\r\n");
       out.write("            </form>\r\n");
       out.write("        </div>      \r\n");
       out.write("            \r\n");
@@ -259,6 +269,7 @@ public final class hashtags_jsp extends org.apache.jasper.runtime.HttpJspBase
               double latitude = 0;
                 double longitude = 0;
                 String keyword = "";
+                String selected;
                 double radius = 500;
                 int sents[]= {0};
                 
@@ -266,6 +277,7 @@ public final class hashtags_jsp extends org.apache.jasper.runtime.HttpJspBase
                 String l1 = request.getParameter("latH"); 
                 String l2 = request.getParameter("longH"); 
                 String rad = request.getParameter("radH");
+                //selected = request.getParameterValues("sentim");
                 
                 if (kw != null){
                   if (kw.length() == 0){
@@ -283,29 +295,79 @@ public final class hashtags_jsp extends org.apache.jasper.runtime.HttpJspBase
                 if ((rad != null) && (rad.length()!= 0)) { 
                   radius = Double.parseDouble(rad);
                 }
-               //&& "POST".equalsIgnoreCase(request.getMethod())
-                if (keyword != ""  && request.getParameter("submit") != null) {
-                
-      out.write("\r\n");
-      out.write("                    <script>\r\n");
-      out.write("                        showDiv('changeH', 'tree', 'onmap');\r\n");
-      out.write("                    </script>\r\n");
-      out.write("                ");
-    
-                    FindTweets.findByLoc (keyword, 1, 100, latitude, longitude, radius, "h");
+                if (request.getParameterValues("sentim") != null){
+                    selected = "including sentiment analysis";
                 }
-
-                
-      out.write("                 \r\n");
-      out.write("                \r\n");
-      out.write("                \r\n");
+                else selected = "";
+               
+      out.write("\r\n");
       out.write("                \r\n");
       out.write("<div  id = \"tree\">\r\n");
-      out.write("    \r\n");
+      out.write("    ");
+    
+       //if (submitted > 0){  
+            ConnectDB con = new ConnectDB();
+            TreeNode tn = new TreeNode (keyword.toLowerCase(), 100, null); 
+            TreeNode tree;
+            int scores[];
+            double average;
+            boolean searchSents = false;
+            String color = "black";
+            if (selected == "") {
+                searchSents = false;
+                FindTweets.findByLoc (keyword, 1, 100, latitude, longitude, radius, "h");
+                
+            }
+            if (selected == null){
+                //System.out.println("uuuuuuuu");
+            }
+            
+            else {
+                searchSents = true;
+            }
+            tree = JavaTweet.createHashtagsTree(tn, 15, keyword, searchSents, 0, con);
+            if (searchSents){
+                FindTweets.findByLoc (keyword, 1, 100, latitude, longitude, radius, "hs");
+                
+                scores = tree.getScores();
+                average = scores[6]/scores[5];
+                if (average >=0 && average <=0.8){
+                    color = "dred";
+                }
+                if (average >0.8 && average <1.5){
+                    color = "red";
+                }
+                if (average >=1.5 && average <2.5){
+                    color = "grey";
+                }
+                if (average >=2.5 && average <3.2){
+                    color = "blue";
+                }
+                if (average >=3.2 && average <=4){
+                    color = "dblue";
+                }
+                     
+            } 
+             
+            //tree.recursivePrint();
+            String tag = tree.getTag();
+            String v = tree.getValue();
+            List <TreeNode> children = tree.getChildren(); 
+            String child = "";
+            for (int j = 0; j< children.size(); j++){
+                child += children.get(j).getTag() + " " + children.get(j).getValue() + "    ";
+            }
+            
+            
+        
+      out.write("   \r\n");
+      out.write("        \r\n");
       out.write("    <br>\r\n");
-      out.write("    <span id = \"headhash\">Hashtags-Tree for the <i><b>\"");
+      out.write("    <span id = \"headhash\">Hashtags-Tree for the Topic <i><b>\"");
       out.print(keyword );
-      out.write("\"</b></i> </span> \r\n");
+      out.write("\"</b> ");
+      out.print(selected );
+      out.write(" </i></span> \r\n");
       out.write("    <input id = \"new\" type = \"submit\" name = \"newhash\" value=\"New Hashtags Analysis\" class = \"button\" onclick=\"newSearch('changeH', 'tree', 'onmap'), hide()\">\r\n");
       out.write("    <br> \r\n");
       out.write("    <h4 class =\"center\"><i>Click on the node to see its children</i></h4>\r\n");
@@ -313,10 +375,16 @@ public final class hashtags_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("    <div id = \"tree-structure\">\r\n");
       out.write("        <br>\r\n");
       out.write("       \r\n");
-      out.write("        <div  id =\"root\" class = \"root center\" >\r\n");
-      out.write("            <span> Root </span><br><br>\r\n");
-      out.write("            <span>#football</span>\r\n");
+      out.write("        <div  id =\"root\" class = \"root center ");
+      out.print(color );
+      out.write("\" >\r\n");
+      out.write("            <br>\r\n");
+      out.write("            <span><b>");
+      out.print(keyword );
+      out.write("</b></span>\r\n");
       out.write("        </div>\r\n");
+      out.write("        <br>\r\n");
+      out.write("        \r\n");
       out.write("        \r\n");
       out.write("        <!--lines root -> level1-->\r\n");
       out.write("        \r\n");
@@ -331,26 +399,49 @@ public final class hashtags_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("        <!-- level 1: -->\r\n");
       out.write("        \r\n");
       out.write("        \r\n");
-      out.write("        <div id = \"level1\" class = \"center\">\r\n");
-      out.write("        \r\n");
-      out.write("            <div id = \"tag1\" class = \"level1 red\">\r\n");
-      out.write("                <span>#tag1</span><br>\r\n");
-      out.write("                <span>Value: 20% </span>\r\n");
-      out.write("            </div>\r\n");
-      out.write("            <div id = \"tag2\" class = \"level1 red \">\r\n");
-      out.write("                <span>#tag2</span><br>\r\n");
-      out.write("                <span>Value: 20% </span>\r\n");
-      out.write("            </div>\r\n");
-      out.write("            <div id = \"tag3\" class = \"level1 grey\">\r\n");
-      out.write("                <span>#tag3</span><br>\r\n");
-      out.write("                <span>Value: 20% </span>\r\n");
-      out.write("            </div>\r\n");
-      out.write("            <div id = \"tag4\" class = \"level1 blue\">\r\n");
-      out.write("                <span>#tag4</span><br>\r\n");
-      out.write("                <span>Value: 20% </span>\r\n");
-      out.write("            </div>\r\n");
+      out.write("        <div id = \"level1\" class=\"center\">\r\n");
+      out.write("            \r\n");
+      out.write("         ");
+ 
+            double width = 100/(children.size());
+            
+            if (children.size() > 8) {
+                width = 8;
+            }
+            for (int k = 0; k < children.size(); k++){
+                String id = "tag" + k;
+                
+            
+            
+         
+      out.write("   \r\n");
+      out.write("                <div id=\"");
+      out.print(id );
+      out.write("\" class = \"level1 grey \">\r\n");
+      out.write("                    <span>");
+      out.print(id );
+      out.write("</span><br>\r\n");
+      out.write("                    <span><b>");
+      out.print(children.get(k).getTag() );
+      out.write("</b></span><br>\r\n");
+      out.write("                    <span>Value: ");
+      out.print(children.get(k).getValue() );
+      out.write("% </span>\r\n");
+      out.write("                </div> \r\n");
+      out.write("                <script>\r\n");
+      out.write("                    document.getElementById('");
+      out.print(id );
+      out.write("').style.width =  \"");
+      out.print(width );
+      out.write("%\";\r\n");
+      out.write("                </script>\r\n");
+      out.write("         ");
+      
+            } 
+        
+      out.write("\r\n");
+      out.write("        <br>\r\n");
       out.write("        </div>\r\n");
-      out.write("        \r\n");
       out.write("        \r\n");
       out.write("        <!--lines level1 -> level2-->\r\n");
       out.write("        \r\n");
@@ -380,11 +471,76 @@ public final class hashtags_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("        \r\n");
       out.write("        \r\n");
       out.write("        <!-- level 2: -->\r\n");
+      out.write("        <div class = \" center\">\r\n");
       out.write("        \r\n");
+      out.write("        ");
+ for (int k = 0; k < children.size(); k ++){  
+              
+             
+         
+      out.write("\r\n");
+      out.write("                  <div style =\"width: ");
+      out.print(width );
+      out.write("%; display: inline-block; vertical-align: top;\" class = \"blue\">\r\n");
+      out.write("         ");
+       
+                  if (children.get(k).getChildren().size()!= 0){
+                  List <TreeNode> children2 = children.get(k).getChildren();
+                  double width2 = 100/children2.size();
+                  if (width2 < 35) {
+                      width2 = 35;
+                  }
+                  for (int m = 0; m < children2.size(); m++) {      
+                        String id2 = "tag" + k + "-" + m;
+         
+      out.write("             \r\n");
+      out.write("                            <div id=\"");
+      out.print(id2 );
+      out.write("\" class = \"level1 grey\">\r\n");
+      out.write("                               <span>");
+      out.print(id2 );
+      out.write("</span><br>\r\n");
+      out.write("                               <span><b>");
+      out.print(children2.get(m).getTag() );
+      out.write("</b></span><br>\r\n");
+      out.write("                               <span>Value: ");
+      out.print(children2.get(m).getValue() );
+      out.write("% </span>\r\n");
+      out.write("                            </div> \r\n");
+      out.write("                        \r\n");
+      out.write("                        <script>\r\n");
+      out.write("                            document.getElementById('");
+      out.print(id2 );
+      out.write("').style.width =  \"");
+      out.print(width2 );
+      out.write("%\";\r\n");
+      out.write("                        </script>\r\n");
+      out.write("        ");
+        }
+                  
+        
       out.write("        \r\n");
-      out.write("            \r\n");
+      out.write("                \r\n");
+      out.write("                  <script> \r\n");
+      out.write("                      //document.getElementById('idbox");
+      out.print(k );
+      out.write("').style.width =  \"");
+      out.print(width );
+      out.write("%\"; \r\n");
+      out.write("                  </script>\r\n");
+      out.write("        ");
+       }
+         
+      out.write("        </div>\r\n");
+      out.write("         ");
+   }
+            
+        
+      out.write("\r\n");
       out.write("        \r\n");
-      out.write("        <div id= \"box1\" class = \"box center\">\r\n");
+      out.write("        </div>\r\n");
+      out.write("        <br>\r\n");
+      out.write("      <!--  <div>\r\n");
       out.write("            <div class = \"level2 red \">\r\n");
       out.write("                <span>#tag11</span><br>\r\n");
       out.write("                <span>35% </span>\r\n");
@@ -469,8 +625,10 @@ public final class hashtags_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("            <line class = \"line\" id=\"line411\"/>  \r\n");
       out.write("        </svg>\r\n");
       out.write("        <!-- level 3: -->\r\n");
+      out.write("        <!-- level 3: -->\r\n");
+      out.write("        <!-- level 3: -->\r\n");
       out.write("        \r\n");
-      out.write("        \r\n");
+      out.write("        <!--\r\n");
       out.write("        <div id = \"box1-2\" class = \"box center\">\r\n");
       out.write("            <div class = \"level2 red \">\r\n");
       out.write("                <span>#tag111</span><br>\r\n");
@@ -509,16 +667,27 @@ public final class hashtags_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("                <span>20% </span>\r\n");
       out.write("            </div>\r\n");
       out.write("            \r\n");
-      out.write("        </div>\r\n");
+      out.write("        </div> \r\n");
       out.write("        \r\n");
-      out.write("    </div>\r\n");
+      out.write("    </div> -->\r\n");
       out.write("    <br>\r\n");
-      out.write("    \r\n");
-      out.write("    \r\n");
-      out.write("    \r\n");
+      out.write("   \r\n");
       out.write("\r\n");
-      out.write("</div>\r\n");
-      out.write("  \r\n");
+      out.write("        ");
+//&& "POST".equalsIgnoreCase(request.getMethod())
+        
+        if (keyword != ""  && request.getParameter("submit") != null) {
+            //submitted = 1;
+        
+      out.write("\r\n");
+      out.write("            <script>\r\n");
+      out.write("                showDiv('changeH', 'tree', 'onmap');\r\n");
+      out.write("                //onclick=\"showTextHash('headhash', 'topicH', 'placeH', 'senton')\"\r\n");
+      out.write("            </script>\r\n");
+      out.write("        \r\n");
+      out.write("        \r\n");
+      out.write("        \r\n");
+      out.write("  </div>\r\n");
       out.write("</body>\r\n");
       out.write("<html>");
     } catch (Throwable t) {
